@@ -93,7 +93,7 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Testing
 
-- **Backend:** FALTA DEFINIR
+- **Backend:** Vitest (unit test) y Playwright (E2E)
 
 ---
 
