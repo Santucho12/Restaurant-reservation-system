@@ -1,1 +1,0 @@
-// Validación de disponibilidad
