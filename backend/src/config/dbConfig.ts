@@ -6,8 +6,8 @@ dotenv.config();
 
 const sequelize = new Sequelize(
     process.env.DB_NAME || 'restaurant_reservation_system',
-    process.env.DB_USER || 'user-rrs',
-    process.env.DB_PASSWORD || 'metodologia-2',
+    process.env.DB_USER || 'userrrs',
+    process.env.DB_PASSWORD || 'metodologia2',
     {
         host: process.env.DB_HOST,
         dialect: 'mysql',
