@@ -1,0 +1,43 @@
+{
+  "name": "restaurant-reservation-system-backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Santucho12/Restaurant-reservation-system#readme",
+  "bugs": {
+    "url": "https://github.com/Santucho12/Restaurant-reservation-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Santucho12/Restaurant-reservation-system.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "app.ts",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.10.1",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mysql2": "^3.15.2",
+    "npm": "^11.6.2",
+    "sequelize": "^6.37.7",
+    "zod": "^4.1.12"
+  }
+}

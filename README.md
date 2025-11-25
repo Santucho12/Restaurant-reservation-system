@@ -76,7 +76,7 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Base de Datos
 
-- **DB:** FALTA DEFINIR sql/mongo?
+- **DB:** SQL
 - **Estructura:**
     - **Cliente:** id, nombre, email
     - **Mesa:** id, número, capacidad, ubicación, disponibilidad
@@ -93,7 +93,7 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Testing
 
-- **Backend:** FALTA DEFINIR
+- **Backend:** Vitest (unit test) y Playwright (E2E)
 
 ---
 
