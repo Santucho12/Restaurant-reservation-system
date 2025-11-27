@@ -1,6 +1,7 @@
 // Lógica de reservas
 import { Request, Response } from 'express'
 import Reserva from '../models/Reserva'
+import { Op } from 'sequelize'
 
 export default new class ReservaController {
     async getAllReservas(req: Request, res: Response) {
@@ -32,6 +33,21 @@ export default new class ReservaController {
 
     async createReserva(req: Request, res: Response) {
         try {
+            const { mesaId, 'fecha/hora': fechaInicio, fechaFin } = req.body;
+
+            const existingReserva = await Reserva.findOne({
+                where: {
+                    mesaId,
+                    estado: { [Op.ne]: 'cancelada' },
+                    'fecha/hora': { [Op.lt]: fechaFin },
+                    fechaFin: { [Op.gt]: fechaInicio }
+                }
+            });
+
+            if (existingReserva) {
+                return res.status(400).json({ message: 'La mesa ya esta reservada en ese horario' });
+            }
+
             const newReserva = await Reserva.create(req.body)
             res.status(201).json(newReserva)
         } catch (error) {
