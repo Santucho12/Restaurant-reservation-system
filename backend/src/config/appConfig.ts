@@ -3,7 +3,7 @@ import {Response, Request} from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import cors from 'cors'
-
+import reservaRoutes from '../routes/reservaRoutes'
 dotenv.config()
 
 export default class Server {
@@ -40,7 +40,8 @@ export default class Server {
                 "status": "ok",
             }
         ))
-        //this.app.use('/api/v1', routes)
+
+        this.app.use('/api/v1', reservaRoutes)
     }
 
     public listen(): void {
