@@ -1,9 +1,12 @@
 import express, { type Application } from 'express'
-import {Response, Request} from 'express'
+import { Response, Request } from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import cors from 'cors'
 import reservaRoutes from '../routes/reservaRoutes'
+import mesaRoutes from '../routes/mesaRoutes'
+import clienteRoutes from '../routes/clienteRoutes'
+
 dotenv.config()
 
 export default class Server {
@@ -33,7 +36,7 @@ export default class Server {
         this.app.use(morgan("dev"))
         this.app.use(cors())
     }
-    
+
     private routes(): void {
         this.app.use('/health', (req: Request, res: Response) => res.status(200).json(
             {
@@ -42,6 +45,8 @@ export default class Server {
         ))
 
         this.app.use('/api/v1', reservaRoutes)
+        this.app.use('/api/v1', mesaRoutes)
+        this.app.use('/api/v1', clienteRoutes)
     }
 
     public listen(): void {
