@@ -3,6 +3,11 @@ import { Request, Response } from 'express'
 import Reserva from '../models/Reserva'
 import { Op } from 'sequelize'
 
+import { ValidadorReservas } from '../strategies/ValidadorReservas';
+import { SuperposicionStrategy } from '../strategies/SuperposicionStrategy';
+import { CapacidadStrategy } from '../strategies/CapacidadStrategy';
+import { TurnoStrategy } from '../strategies/TurnoStrategy';
+
 export default new class ReservaController {
     async getAllReservas(req: Request, res: Response) {
         try {
@@ -33,24 +38,21 @@ export default new class ReservaController {
 
     async createReserva(req: Request, res: Response) {
         try {
-            const { mesaId, 'fecha/hora': fechaInicio, fechaFin } = req.body;
+            const validator = new ValidadorReservas();
+            validator.agregarStrategy(new SuperposicionStrategy());
+            validator.agregarStrategy(new CapacidadStrategy());
+            validator.agregarStrategy(new TurnoStrategy());
 
-            const existingReserva = await Reserva.findOne({
-                where: {
-                    mesaId,
-                    estado: { [Op.ne]: 'cancelada' },
-                    'fecha/hora': { [Op.lt]: fechaFin },
-                    fechaFin: { [Op.gt]: fechaInicio }
-                }
-            });
-
-            if (existingReserva) {
-                return res.status(400).json({ message: 'La mesa ya esta reservada en ese horario' });
-            }
+            await validator.validar(req.body);
 
             const newReserva = await Reserva.create(req.body)
             res.status(201).json(newReserva)
-        } catch (error) {
+        } catch (error: any) {
+            if (error.message === 'La mesa ya esta reservada en ese horario' ||
+                error.message.includes('capacidad') ||
+                error.message.includes('horario')) {
+                return res.status(400).json({ message: error.message });
+            }
             res.status(500).json({ 'error': error })
         }
     }
