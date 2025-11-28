@@ -1,6 +1,7 @@
 // Lógica de reservas
 import { Request, Response } from 'express'
 import Reserva from '../models/Reserva'
+import ReservaService from '../services/ReservaService';
 import { Op } from 'sequelize'
 
 import { ValidadorReservas } from '../strategies/ValidadorReservas';
@@ -45,15 +46,15 @@ export default new class ReservaController {
 
             await validator.validar(req.body);
 
-            const newReserva = await Reserva.create(req.body)
-            res.status(201).json(newReserva)
+            const newReserva = await ReservaService.createReserva(req.body);
+            res.status(201).json(newReserva);
         } catch (error: any) {
             if (error.message === 'La mesa ya esta reservada en ese horario' ||
                 error.message.includes('capacidad') ||
                 error.message.includes('horario')) {
                 return res.status(400).json({ message: error.message });
             }
-            res.status(500).json({ 'error': error })
+            res.status(500).json({ 'error': error });
         }
     }
 

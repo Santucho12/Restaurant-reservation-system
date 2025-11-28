@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/dbConfig'
+import { IObserver, ISubject } from '../observers/Observer';
 
 interface ReservaAttributes {
     id: number,
@@ -60,4 +61,31 @@ const Reserva = sequelize.define<ReservaInstance>('Reserva', {
     timestamps: true
 })
 
+
+// Implementación de Subject para Observer
+class ReservaSubject implements ISubject {
+    private observers: IObserver[] = [];
+    private reserva: ReservaInstance | null = null;
+
+    setReserva(reserva: ReservaInstance) {
+        this.reserva = reserva;
+        this.notifyObservers();
+    }
+
+    addObserver(observer: IObserver): void {
+        this.observers.push(observer);
+    }
+
+    removeObserver(observer: IObserver): void {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+
+    notifyObservers(): void {
+        if (this.reserva) {
+            this.observers.forEach(observer => observer.update(this.reserva!));
+        }
+    }
+}
+
+export { ReservaSubject };
 export default Reserva
