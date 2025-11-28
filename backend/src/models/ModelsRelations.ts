@@ -2,7 +2,7 @@ import Mesa from './Mesa';
 import Reserva from './Reserva';
 import Cliente from './Cliente';
 
-export const defineAssociations = () => {
+export const modelRelations = () => {
     Mesa.hasMany(Reserva, { foreignKey: 'mesaId' });
     Reserva.belongsTo(Mesa, { foreignKey: 'mesaId' });
 
