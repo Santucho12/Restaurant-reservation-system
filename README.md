@@ -1,4 +1,4 @@
-# Sistema Web de Reservas para Restaurante (Para Usuarios)
+# Sistema Web de Reservas para Restaurante (Para Usuarios) - La Maison
 
 ## Sobre el Proyecto
 
@@ -19,6 +19,35 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
 - Santiago Segal
 - Nicolas Cordano
 - Abner Grgurich
+
+---
+
+## Correr el proyecto
+
+1. Clonar el repositorio e instalar dependencias en el backend:  
+   ```bash
+   git clone https://github.com/Santucho12/Restaurant-reservation-system.git
+   Una vez ubicados en la carpeta root del proyecto
+   
+   cd backend
+   npm install
+   ```
+2. Iniciar el backend:  
+   ```bash
+   Una vez ubicados en la carpeta root del proyecto
+
+   cd backend
+   npm run dev
+   ```
+2. Correr el frontend:  
+   ```bash
+   Una vez ubicados en la carpeta root del proyecto
+
+   cd frontend/src
+   npx -y serve
+
+   ```
+
 
 ---
 
