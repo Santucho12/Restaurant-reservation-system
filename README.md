@@ -28,7 +28,7 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
    ```bash
    git clone https://github.com/Santucho12/Restaurant-reservation-system.git
    Una vez ubicados en la carpeta root del proyecto
-   
+
    cd backend
    npm install
    ```
@@ -39,7 +39,7 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
    cd backend
    npm run dev
    ```
-2. Correr el frontend:  
+3. Correr el frontend:  
    ```bash
    Una vez ubicados en la carpeta root del proyecto
 
