@@ -13,7 +13,7 @@ interface ReservaAttributes {
     estado: 'confirmada' | 'cancelada' | 'pendiente' | 'finalizada'
 }
 
-interface ReservaInstance extends Model<ReservaAttributes>, ReservaAttributes { }
+export interface ReservaInstance extends Model<ReservaAttributes>, ReservaAttributes { }
 
 const Reserva = sequelize.define<ReservaInstance>('Reserva', {
     id: {

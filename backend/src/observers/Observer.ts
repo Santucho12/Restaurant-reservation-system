@@ -1,7 +1,7 @@
-import { Reserva } from "../models/Reserva";
+import { ReservaInstance } from "../models/Reserva";
 
 export interface IObserver {
-    update(reserva: Reserva): void;
+    update(reserva: ReservaInstance): void;
 }
 
 export interface ISubject {
