@@ -56,30 +56,30 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Frontend
 
-- **Tecnologías:** React + Vite
-- **Extras opcionales:** Calendario (ej: podria ser React Calendar)
+- **Tecnologías:** JS - HTML - CSS
+- **Extras opcionales:** Calendario
 - **Funcionalidades:**
     - Formularios paso a paso para reservas
-    - Mostrar turnos disponibles
+    - Mostrar mesas disponibles acorde al pedido
     - Confirmación visual de la reserva
     - Conexión con el backend
 
 ### Backend
 
 - **Tecnologías:** Node.js + Express
-- **Estructura modular:** routes, controllers, services, models, repositories, factories, strategies, observers
+- **Estructura modular:** routes, controllers, services, models, repositories, singleton, strategies, observers
 - **Funcionalidades:**
     - Gestión de reservas y disponibilidad
     - Validación en tiempo real
     - Envío de emails de confirmación
-- **Patrones usados:** Factory, Strategy, Observer
+- **Patrones usados:** Singleton (iniciaclizacion del servidor), Strategy, Observer
 
 ### Base de Datos
 
-- **DB:** SQL
+- **DB:** MySQL
 - **Estructura:**
     - **Cliente:** id, nombre, email
-    - **Mesa:** id, número, capacidad, ubicación, disponibilidad
+    - **Mesa:** id, número, capacidad, ubicación
     - **Reserva:** id, cliente, mesa, fecha/hora, cantidad de personas, turno (almuerzo/cena), estado
 - **Funcionalidades:**
     - Almacenamiento de reservas y clientes
@@ -88,65 +88,54 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Email
 
-- **Servicios:** FALTA DEFINIR
 - **Funcionalidad:** Envío de confirmaciones y gestión de cancelaciones desde el correo
-
-### Testing
-
-- **Backend:** Vitest (unit test) y Playwright (E2E)
 
 ---
 
 ## Estructura del Proyecto
 
-```
-backend/
-├── src/
-│   ├── routes/
-│   │   └── reservaRoutes         # Endpoints para crear, ver y cancelar reservas
-│   ├── controllers/
-│   │   └── ReservaController     # Lógica de reservas
-│   ├── services/
-│   │   └── ReservaService        # Lógica principal y validaciones
-│   ├── models/
-│   │   └── Reserva               # Modelo de reserva
-│   ├── factories/
-│   │   └── ReservaFactory        # Creación de reservas
-│   ├── strategies/
-│   │   └── DisponibilidadStrategy# Validación de disponibilidad
-│   ├── observers/
-│   │   └── EmailNotifier         # Notificaciones por email
-│   └── repositories/
-│       └── ReservaRepository     # Persistencia en base de datos
-├── config/
-│   ├── dbConfig.js               # Configuración de base de datos
-│   └── appConfig.js              # Configuración general
-├── .env
+## 🚀 Estructura de Directorios Corregida
+
+```text
+.
+├── backend/
+│   └── src/
+│       ├── config/
+│       │   ├── appConfig.js
+│       │   └── dbConfig.js
+│       ├── routes/
+│       │   ├── clienteRoutes.ts
+│       │   ├── mesaRoutes.ts
+│       │   └── reservaRoutes.ts
+│       ├── controllers/
+│       │   ├── ClienteController.ts
+│       │   ├── MesaController.ts
+│       │   └── ReservaController.ts
+│       ├── services/
+│       │   └── ReservaService.ts
+│       ├── models/
+│       │   ├── Cliente.ts
+│       │   ├── Mesa.ts
+│       │   ├── Reserva.ts
+│       │   └── ModelRelations.ts
+│       ├── factories/
+│       │   └── ReservaFactory.ts
+│       ├── strategies/
+│       │   ├── CapacidadStrategy.ts
+│       │   ├── SuperposicionStrategy.ts
+│       │   ├── TurnoStrategy.ts
+│       │   ├── ValidacionStrategy.ts
+│       │   └── ValidarReserva.ts
+│       └── observers/
+│           ├── EmailNotifier.ts
+│           └── Observers.ts
+├── .env.template
 ├── .gitignore
-
-frontend/
-├── package.json
-├── vite.config.js
-├── public/
-│   └── index.html
-└── src/
-    ├── main.jsx
-    ├── App.jsx
-    ├── index.css
-    ├── components/
-    │   ├── Header.jsx
-    │   ├── Footer.jsx
-    │   └── ReservaForm.jsx       # Formulario de reservas
-    └── services/
-        └── reservaService.js    # Conexión con backend
-
-tests/
-database/
-├── init.sql                      # Creación de tablas
-└── seed.sql                      # Datos de prueba
-
-tests/
-└── reserva.test.js               # Pruebas unitarias
-
-README.md
+│
+└── frontend/
+    └── src/
+        ├── styles/
+        │   └── style.css
+        ├── app.js
+        └── index.html
 ```
