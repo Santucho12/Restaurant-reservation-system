@@ -38,9 +38,9 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ## Patrones de Diseño Utilizados
 
-### Factory
-- **Función:** Crea reservas de forma centralizada y consistente.
-- **Ventaja:** Garantiza estructura y validaciones uniformes en todas las reservas.
+### Singleton
+- **Función:** Nos aseguramos que la clase Server este instanciada de manera unica controlada a nivel global. 
+- **Ventaja:** Evitamos que se creen multiples servidores de Express, o al menos que no se intente continuamente, evitando de esta forma conflictos de puertos y un manejo incosistente de las solicitudes
 
 ### Strategy
 - **Función:** Define distintas formas de validar disponibilidad según personas, fecha y turno.
