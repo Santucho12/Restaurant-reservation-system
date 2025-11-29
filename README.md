@@ -32,14 +32,18 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
    cd backend
    npm install
    ```
-2. Iniciar el backend:  
+2. Renombrar .env.template:  
+   ```bash
+    Cambie el nombre de <.env.template> a <.env> y llene los datos sensibles
+   ```
+3. Iniciar el backend:  
    ```bash
    Una vez ubicados en la carpeta root del proyecto
 
    cd backend
    npm run dev
    ```
-3. Correr el frontend:  
+4. Correr el frontend:  
    ```bash
    Una vez ubicados en la carpeta root del proyecto
 
