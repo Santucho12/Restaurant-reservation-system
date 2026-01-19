@@ -1,3 +1,3 @@
 export interface ValidacionStrategy {
-    validar(datos: any): Promise<void>;
+  validar(datos: any): Promise<void>;
 }
