@@ -300,3 +300,73 @@
 - 500: { "error": "Detalles del error" }
 
 ---
+
+### POST /clientes
+**Descripción:** Crea un nuevo cliente.
+
+**Body (JSON):**
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@email.com",
+  "telefono": "123456789"
+}
+```
+**Respuesta exitosa (201):**
+```json
+{
+  "id": 1,
+  "nombre": "Juan Pérez",
+  "email": "juan@email.com",
+  "telefono": "123456789"
+}
+```
+**Errores comunes:**
+- 400: { "message": "Datos inválidos" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### PUT /clientes/:id
+**Descripción:** Actualiza los datos de un cliente existente.
+
+**Parámetros de ruta:**
+- `id` (number): ID del cliente.
+
+**Body (JSON):**
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@email.com",
+  "telefono": "987654321"
+}
+```
+**Respuesta exitosa (200):**
+```json
+{
+  "message": "Cliente actualizado"
+}
+```
+**Errores comunes:**
+- 404: { "message": "Cliente no encontrado" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### DELETE /clientes/:id
+**Descripción:** Elimina un cliente por su ID.
+
+**Parámetros de ruta:**
+- `id` (number): ID del cliente.
+
+**Respuesta exitosa (200):**
+```json
+{
+  "message": "Cliente eliminado"
+}
+```
+**Errores comunes:**
+- 404: { "message": "Cliente no encontrado" }
+- 500: { "error": "Detalles del error" }
+
+---
