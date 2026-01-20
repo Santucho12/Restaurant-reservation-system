@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/dbConfig';
+import Database from '../config/dbConfig';
 import { IObserver, ISubject } from '../observers/Observer';
 
 interface ReservaAttributes {
@@ -14,9 +14,9 @@ interface ReservaAttributes {
 }
 
 export interface ReservaInstance
-  extends Model<ReservaAttributes>, ReservaAttributes {}
+  extends Model<ReservaAttributes>, ReservaAttributes { }
 
-const Reserva = sequelize.define<ReservaInstance>(
+const Reserva = Database.getInstance().sequelize.define<ReservaInstance>(
   'Reserva',
   {
     id: {
