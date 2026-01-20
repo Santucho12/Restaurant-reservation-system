@@ -183,3 +183,73 @@
 - 500: { "error": "Detalles del error" }
 
 ---
+
+### POST /mesas
+**Descripción:** Crea una nueva mesa.
+
+**Body (JSON):**
+```json
+{
+  "numeroMesa": 5,
+  "capacidad": 4,
+  "ubicacion": "adentro"
+}
+```
+**Respuesta exitosa (201):**
+```json
+{
+  "id": 1,
+  "numeroMesa": 5,
+  "capacidad": 4,
+  "ubicacion": "adentro"
+}
+```
+**Errores comunes:**
+- 400: { "message": "Datos inválidos" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### PUT /mesas/:id
+**Descripción:** Actualiza los datos de una mesa existente.
+
+**Parámetros de ruta:**
+- `id` (number): ID de la mesa.
+
+**Body (JSON):**
+```json
+{
+  "numero": 6,
+  "capacidad": 6,
+  "ubicacion": "Patio"
+}
+```
+**Respuesta exitosa (200):**
+```json
+{
+  "message": "Mesa actualizada"
+}
+```
+**Errores comunes:**
+- 404: { "message": "Mesa no encontrada" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### DELETE /mesas/:id
+**Descripción:** Elimina una mesa por su ID.
+
+**Parámetros de ruta:**
+- `id` (number): ID de la mesa.
+
+**Respuesta exitosa (200):**
+```json
+{
+  "message": "Mesa eliminada"
+}
+```
+**Errores comunes:**
+- 404: { "message": "Mesa no encontrada" }
+- 500: { "error": "Detalles del error" }
+
+---
