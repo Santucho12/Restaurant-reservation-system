@@ -4,36 +4,50 @@ import mysql from 'mysql2/promise';
 
 dotenv.config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'restaurant_reservation_system',
-  process.env.DB_USER || 'userrrs',
-  process.env.DB_PASSWORD || 'metodologia2',
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
-    timezone: '-03:00',
-    logging: false,
-  },
-);
+class Database {
+  private static instance: Database;
+  public sequelize: Sequelize;
 
-export const connectDB = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Conexion exitosa a la base de datos');
-
-    await sequelize.sync({ force: false });
-    console.log('Base de datos y tablas creadas correctamente.');
-  } catch (error) {
-    console.error('Error conectando a la base de datos:', error);
+  private constructor() {
+    this.sequelize = new Sequelize(
+      process.env.DB_NAME || 'restaurant_reservation_system',
+      process.env.DB_USER || 'userrrs',
+      process.env.DB_PASSWORD || 'metodologia2',
+      {
+        host: process.env.DB_HOST,
+        dialect: 'mysql',
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+        pool: {
+          max: 5,
+          min: 0,
+          acquire: 30000,
+          idle: 10000,
+        },
+        timezone: '-03:00',
+        logging: false,
+      },
+    );
   }
-};
+
+  public static getInstance(): Database {
+    if (!Database.instance) {
+      Database.instance = new Database();
+    }
+    return Database.instance;
+  }
+
+  public async connect(): Promise<void> {
+    try {
+      await this.sequelize.authenticate();
+      console.log('Conexion exitosa a la base de datos');
+
+      await this.sequelize.sync({ force: false });
+      console.log('Base de datos y tablas creadas correctamente.');
+    } catch (error) {
+      console.error('Error conectando a la base de datos:', error);
+    }
+  }
+}
 
 export const createDatabaseIfNotExists = async () => {
   const connection = await mysql.createConnection({
@@ -50,4 +64,4 @@ export const createDatabaseIfNotExists = async () => {
   await connection.end();
 };
 
-export default sequelize;
+export default Database;
