@@ -135,3 +135,51 @@
 - 500: { "error": "Detalles del error" }
 
 ---
+
+
+# Documentación de Endpoints - Mesas
+
+---
+
+### GET /mesas
+**Descripción:** Obtiene la lista de todas las mesas registradas en el sistema.
+
+**Parámetros de consulta:** Ninguno.
+
+**Respuesta exitosa (200):**
+```json
+[
+  {
+    "id": 1,
+    "numero": 5,
+    "capacidad": 4,
+    "ubicacion": "Ventana"
+  }
+]
+```
+**Errores comunes:**
+- 404: { "message": "No hay mesas" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### GET /mesas/:id
+**Descripción:** Obtiene la información de una mesa específica por su ID.
+
+**Parámetros de ruta:**
+- `id` (number): ID de la mesa.
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "numero": 5,
+  "capacidad": 4,
+  "ubicacion": "Ventana"
+}
+```
+**Errores comunes:**
+- 404: { "message": "No hay mesas" }
+- 500: { "error": "Detalles del error" }
+
+---
