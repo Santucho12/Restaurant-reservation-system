@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/dbConfig';
+import Database from '../config/dbConfig';
 
 interface ClienteAttributes {
   id: number;
@@ -7,9 +7,9 @@ interface ClienteAttributes {
   email: string;
 }
 
-interface ClienteInstance extends Model<ClienteAttributes>, ClienteAttributes {}
+interface ClienteInstance extends Model<ClienteAttributes>, ClienteAttributes { }
 
-const Cliente = sequelize.define<ClienteInstance>(
+const Cliente = Database.getInstance().sequelize.define<ClienteInstance>(
   'Cliente',
   {
     id: {

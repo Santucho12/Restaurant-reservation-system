@@ -1,11 +1,12 @@
 import Server from './config/appConfig';
-import { connectDB, createDatabaseIfNotExists } from './config/dbConfig';
+import Database, { createDatabaseIfNotExists } from './config/dbConfig';
 import { modelRelations } from './models/ModelsRelations';
 import ReservaService from './services/ReservaService';
 
 async function app(): Promise<void> {
   await createDatabaseIfNotExists();
-  await connectDB();
+  const db = Database.getInstance();
+  await db.connect();
   modelRelations();
 
   setInterval(() => {
