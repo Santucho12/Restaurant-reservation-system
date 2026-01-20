@@ -253,3 +253,50 @@
 - 500: { "error": "Detalles del error" }
 
 ---
+
+# Documentación de Endpoints - Clientes
+
+---
+
+### GET /clientes
+**Descripción:** Obtiene la lista de todos los clientes registrados en el sistema.
+
+**Parámetros de consulta:** Ninguno.
+
+**Respuesta exitosa (200):**
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Juan Pérez",
+    "email": "juan@email.com",
+    "telefono": "123456789"
+  }
+]
+```
+**Errores comunes:**
+- 404: { "message": "No hay clientes" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### GET /clientes/:id
+**Descripción:** Obtiene la información de un cliente específico por su ID.
+
+**Parámetros de ruta:**
+- `id` (number): ID del cliente.
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "nombre": "Juan Pérez",
+  "email": "juan@email.com",
+  "telefono": "123456789"
+}
+```
+**Errores comunes:**
+- 404: { "message": "No hay clientes" }
+- 500: { "error": "Detalles del error" }
+
+---
