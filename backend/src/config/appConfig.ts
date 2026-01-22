@@ -30,6 +30,10 @@ export default class Server {
     return Server.instance;
   }
 
+  public getApp(): Application {
+    return this.app;
+  }
+
   private middlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
