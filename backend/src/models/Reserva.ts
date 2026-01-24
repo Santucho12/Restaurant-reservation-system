@@ -14,7 +14,7 @@ interface ReservaAttributes {
 }
 
 export interface ReservaInstance
-  extends Model<ReservaAttributes>, ReservaAttributes { }
+  extends Model<ReservaAttributes>, ReservaAttributes {}
 
 const Reserva = Database.getInstance().sequelize.define<ReservaInstance>(
   'Reserva',

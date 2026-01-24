@@ -8,7 +8,7 @@ interface MesaAttributes {
   ubicacion: 'adentro' | 'afuera';
 }
 
-interface MesaInstance extends Model<MesaAttributes>, MesaAttributes { }
+interface MesaInstance extends Model<MesaAttributes>, MesaAttributes {}
 
 const Mesa = Database.getInstance().sequelize.define<MesaInstance>(
   'Mesa',

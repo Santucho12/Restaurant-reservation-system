@@ -7,7 +7,7 @@ interface ClienteAttributes {
   email: string;
 }
 
-interface ClienteInstance extends Model<ClienteAttributes>, ClienteAttributes { }
+interface ClienteInstance extends Model<ClienteAttributes>, ClienteAttributes {}
 
 const Cliente = Database.getInstance().sequelize.define<ClienteInstance>(
   'Cliente',
