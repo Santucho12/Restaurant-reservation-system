@@ -46,15 +46,15 @@ vi.mock('../../services/ReservaService', () => ({
 import { ValidadorReservas } from '../../strategies/ValidadorReservas';
 
 vi.mock('../../strategies/SuperposicionStrategy', () => ({
-  SuperposicionStrategy: class { },
+  SuperposicionStrategy: class {},
 }));
 
 vi.mock('../../strategies/CapacidadStrategy', () => ({
-  CapacidadStrategy: class { },
+  CapacidadStrategy: class {},
 }));
 
 vi.mock('../../strategies/TurnoStrategy', () => ({
-  TurnoStrategy: class { },
+  TurnoStrategy: class {},
 }));
 
 const app = Server.getInstance().getApp();
@@ -65,7 +65,7 @@ describe('API de reservas', () => {
     mockedReservaService.createReserva.mockResolvedValue({ id: 1 });
     vi.restoreAllMocks();
     vi.spyOn(ValidadorReservas.prototype, 'agregarStrategy').mockImplementation(
-      () => { },
+      () => {},
     );
     vi.spyOn(ValidadorReservas.prototype, 'validar').mockResolvedValue(
       undefined,
