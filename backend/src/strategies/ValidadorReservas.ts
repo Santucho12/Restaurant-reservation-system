@@ -1,4 +1,4 @@
-import { ValidacionStrategy } from './ValidacionStrategy';
+import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
 
 export class ValidadorReservas {
   private strats: ValidacionStrategy[] = [];
@@ -7,7 +7,7 @@ export class ValidadorReservas {
     this.strats.push(strategy);
   }
 
-  async validar(datos: any): Promise<void> {
+  async validar(datos: ValidationData): Promise<void> {
     for (const strategy of this.strats) {
       await strategy.validar(datos);
     }

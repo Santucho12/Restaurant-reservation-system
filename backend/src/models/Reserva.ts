@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import Database from '../config/dbConfig';
 import { IObserver, ISubject } from '../observers/Observer';
 
-interface ReservaAttributes {
+export interface ReservaAttributes {
   id: number;
   clienteId: number;
   mesaId: number;
@@ -14,7 +14,7 @@ interface ReservaAttributes {
 }
 
 export interface ReservaInstance
-  extends Model<ReservaAttributes>, ReservaAttributes { }
+  extends Model<ReservaAttributes>, ReservaAttributes {}
 
 const Reserva = Database.getInstance().sequelize.define<ReservaInstance>(
   'Reserva',
