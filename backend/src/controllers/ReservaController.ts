@@ -2,9 +2,8 @@
 import { Request, Response } from 'express';
 import Reserva from '../models/Reserva';
 import ReservaService from '../services/ReservaService';
-import { Op } from 'sequelize';
-
 import { ValidadorReservas } from '../strategies/ValidadorReservas';
+import { ValidationData } from '../strategies/ValidacionStrategy';
 import { SuperposicionStrategy } from '../strategies/SuperposicionStrategy';
 import { CapacidadStrategy } from '../strategies/CapacidadStrategy';
 import { TurnoStrategy } from '../strategies/TurnoStrategy';
@@ -25,7 +24,8 @@ export default new (class ReservaController {
   async getReserva(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const reserva = await Reserva.findByPk(id);
+      const idNumber = Number(id);
+      const reserva = await Reserva.findByPk(idNumber);
 
       if (!reserva) {
         return res.status(404).json({ message: 'No hay reservas' });
@@ -44,17 +44,18 @@ export default new (class ReservaController {
       validator.agregarStrategy(new CapacidadStrategy());
       validator.agregarStrategy(new TurnoStrategy());
 
-      await validator.validar(req.body);
+      await validator.validar(req.body as ValidationData);
 
       const newReserva = await ReservaService.createReserva(req.body);
       res.status(201).json(newReserva);
-    } catch (error: any) {
+    } catch (error) {
       if (
-        error.message === 'La mesa ya esta reservada en ese horario' ||
-        error.message.includes('capacidad') ||
-        error.message.includes('horario')
+        (error as Error).message ===
+          'La mesa ya esta reservada en ese horario' ||
+        (error as Error).message.includes('capacidad') ||
+        (error as Error).message.includes('horario')
       ) {
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: (error as Error).message });
       }
       res.status(500).json({ error: error });
     }
@@ -62,7 +63,7 @@ export default new (class ReservaController {
 
   async updateReserva(req: Request, res: Response) {
     try {
-      const id = req.params.id;
+      const id = Number(req.params.id);
       const updateReserva = Reserva.update(req.body, { where: { id } });
       if (!updateReserva) {
         return res.status(404).json({ message: 'No hay reservas' });
@@ -77,7 +78,8 @@ export default new (class ReservaController {
   async deleteReserva(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const reserva = await Reserva.findByPk(id);
+      const idNumber = Number(id);
+      const reserva = await Reserva.findByPk(idNumber);
       if (!reserva) {
         return res.status(404).json({ message: 'No hay reservas' });
       }

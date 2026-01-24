@@ -2,6 +2,7 @@ import Reserva from '../models/Reserva';
 import { ReservaSubject } from '../models/Reserva';
 import { EmailNotifier } from '../observers/EmailNotifier';
 import { Op } from 'sequelize';
+import { ReservaAttributes } from '../models/Reserva';
 
 class ReservaService {
   private reservaSubject: ReservaSubject;
@@ -28,14 +29,10 @@ class ReservaService {
     }
   }
 
-  async createReserva(data: any) {
-    try {
-      const newReserva = await Reserva.create(data);
-      this.reservaSubject.setReserva(newReserva);
-      return newReserva;
-    } catch (error) {
-      throw error;
-    }
+  async createReserva(data: ReservaAttributes) {
+    const newReserva = await Reserva.create(data);
+    this.reservaSubject.setReserva(newReserva);
+    return newReserva;
   }
 }
 

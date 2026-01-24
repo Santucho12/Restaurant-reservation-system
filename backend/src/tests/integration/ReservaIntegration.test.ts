@@ -1,6 +1,5 @@
-const { mockedValidador, mockedReservaService } = vi.hoisted(() => {
+const { mockedReservaService } = vi.hoisted(() => {
   return {
-    mockedValidador: vi.fn(),
     mockedReservaService: {
       createReserva: vi.fn(),
     },
@@ -10,7 +9,7 @@ const { mockedValidador, mockedReservaService } = vi.hoisted(() => {
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import Server from '../../config/appConfig';
-import Reserva from '../../models/Reserva';
+import Reserva, { ReservaInstance } from '../../models/Reserva';
 
 // Mock de la base de datos
 vi.mock('../../config/dbConfig', () => ({
@@ -47,15 +46,15 @@ vi.mock('../../services/ReservaService', () => ({
 import { ValidadorReservas } from '../../strategies/ValidadorReservas';
 
 vi.mock('../../strategies/SuperposicionStrategy', () => ({
-  SuperposicionStrategy: class {},
+  SuperposicionStrategy: class { },
 }));
 
 vi.mock('../../strategies/CapacidadStrategy', () => ({
-  CapacidadStrategy: class {},
+  CapacidadStrategy: class { },
 }));
 
 vi.mock('../../strategies/TurnoStrategy', () => ({
-  TurnoStrategy: class {},
+  TurnoStrategy: class { },
 }));
 
 const app = Server.getInstance().getApp();
@@ -66,7 +65,7 @@ describe('API de reservas', () => {
     mockedReservaService.createReserva.mockResolvedValue({ id: 1 });
     vi.restoreAllMocks();
     vi.spyOn(ValidadorReservas.prototype, 'agregarStrategy').mockImplementation(
-      () => {},
+      () => { },
     );
     vi.spyOn(ValidadorReservas.prototype, 'validar').mockResolvedValue(
       undefined,
@@ -76,7 +75,9 @@ describe('API de reservas', () => {
   describe('GET /api/v1/reservas', () => {
     it('should return 200 and all reservas', async () => {
       const mockReservas = [{ id: 1 }];
-      (Reserva.findAll as any).mockResolvedValue(mockReservas);
+      vi.mocked(Reserva.findAll).mockResolvedValue(
+        mockReservas as unknown as ReservaInstance[],
+      );
 
       const response = await request(app).get('/api/v1/reservas');
 
@@ -86,7 +87,7 @@ describe('API de reservas', () => {
 
     it('should return 500 on error', async () => {
       const error = new Error('DB Error');
-      (Reserva.findAll as any).mockRejectedValue(error);
+      vi.mocked(Reserva.findAll).mockRejectedValue(error);
 
       const response = await request(app).get('/api/v1/reservas');
 
@@ -97,7 +98,9 @@ describe('API de reservas', () => {
   describe('GET /api/v1/reservas/:id', () => {
     it('deberia retornar un error con un status code de 200', async () => {
       const mockReserva = { id: 1 };
-      (Reserva.findByPk as any).mockResolvedValue(mockReserva);
+      vi.mocked(Reserva.findByPk).mockResolvedValue(
+        mockReserva as unknown as ReservaInstance,
+      );
 
       const response = await request(app).get('/api/v1/reservas/1');
 
@@ -106,7 +109,7 @@ describe('API de reservas', () => {
     });
 
     it('deberia retornar un error con un status code de 404', async () => {
-      (Reserva.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Reserva.findByPk).mockResolvedValue(null);
 
       const response = await request(app).get('/api/v1/reservas/999');
 
@@ -134,7 +137,7 @@ describe('API de reservas', () => {
       const error = { message: errorMsg };
 
       vi.spyOn(ValidadorReservas.prototype, 'validar').mockRejectedValue(
-        error as any,
+        error as unknown,
       );
 
       const response = await request(app).post('/api/v1/reservas').send({});
@@ -159,7 +162,7 @@ describe('API de reservas', () => {
 
   describe('PUT /api/v1/reservas/:id', () => {
     it('deberia actualizar una reserva y retornar un status code de 200', async () => {
-      (Reserva.update as any).mockReturnValue(Promise.resolve([1]));
+      vi.mocked(Reserva.update).mockReturnValue(Promise.resolve([1]));
 
       const response = await request(app)
         .put('/api/v1/reservas/1')
@@ -174,7 +177,9 @@ describe('API de reservas', () => {
     it('deberia eliminar una reserva y retornar un status code de 200', async () => {
       const mockDestroy = vi.fn();
       const mockReservaInstance = { destroy: mockDestroy };
-      (Reserva.findByPk as any).mockResolvedValue(mockReservaInstance);
+      vi.mocked(Reserva.findByPk).mockResolvedValue(
+        mockReservaInstance as unknown as ReservaInstance,
+      );
 
       const response = await request(app).delete('/api/v1/reservas/1');
 
@@ -182,7 +187,7 @@ describe('API de reservas', () => {
     });
 
     it('deberia retornar un error con un status code de 404 si no se encuentra la reserva', async () => {
-      (Reserva.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Reserva.findByPk).mockResolvedValue(null);
 
       const response = await request(app).delete('/api/v1/reservas/999');
 

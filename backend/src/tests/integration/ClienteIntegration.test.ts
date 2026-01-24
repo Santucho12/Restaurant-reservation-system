@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import Server from '../../config/appConfig';
-import Cliente from '../../models/Cliente';
+import Cliente, { ClienteInstance } from '../../models/Cliente';
 
 vi.mock('../../config/dbConfig', () => ({
   default: {
@@ -42,7 +42,10 @@ describe('API de clientes', () => {
   describe('GET /api/v1/clientes', () => {
     it('deberia retornar todos los clientes con un status code de 200', async () => {
       const mockClientes = [{ id: 1, nombre: 'Juan' }];
-      (Cliente.findAll as any).mockResolvedValue(mockClientes);
+
+      vi.mocked(Cliente.findAll).mockResolvedValue(
+        mockClientes as unknown as ClienteInstance[],
+      );
 
       const response = await request(app).get('/api/v1/clientes');
 
@@ -52,7 +55,8 @@ describe('API de clientes', () => {
 
     it('deberia retornar un error con un status code de 500', async () => {
       const error = new Error('Error de la base de datos');
-      (Cliente.findAll as any).mockRejectedValue(error);
+
+      vi.mocked(Cliente.findAll).mockRejectedValue(error);
 
       const response = await request(app).get('/api/v1/clientes');
 
@@ -63,7 +67,10 @@ describe('API de clientes', () => {
   describe('GET /api/v1/clientes/:id', () => {
     it('deberia retornar un cliente con un status code de 200', async () => {
       const mockCliente = { id: 1, nombre: 'Juan' };
-      (Cliente.findByPk as any).mockResolvedValue(mockCliente);
+
+      vi.mocked(Cliente.findByPk).mockResolvedValue(
+        mockCliente as unknown as ClienteInstance,
+      );
 
       const response = await request(app).get('/api/v1/clientes/1');
 
@@ -72,7 +79,7 @@ describe('API de clientes', () => {
     });
 
     it('deberia retornar un error con un status code de 404', async () => {
-      (Cliente.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Cliente.findByPk).mockResolvedValue(null);
 
       const response = await request(app).get('/api/v1/clientes/999');
 
@@ -84,7 +91,9 @@ describe('API de clientes', () => {
     it('deberia crear un cliente y retornar un status code de 201', async () => {
       const newClienteData = { nombre: 'Juan', email: 'juan@test.com' };
       const mockCliente = { id: 1, ...newClienteData };
-      (Cliente.create as any).mockResolvedValue(mockCliente);
+      vi.mocked(Cliente.create).mockResolvedValue(
+        mockCliente as unknown as ClienteInstance,
+      );
 
       const response = await request(app)
         .post('/api/v1/clientes')
@@ -96,7 +105,8 @@ describe('API de clientes', () => {
 
     it('deberia retornar un error con un status code de 500', async () => {
       const error = new Error('Creation error');
-      (Cliente.create as any).mockRejectedValue(error);
+
+      vi.mocked(Cliente.create).mockRejectedValue(error);
 
       const response = await request(app)
         .post('/api/v1/clientes')
@@ -109,7 +119,7 @@ describe('API de clientes', () => {
   describe('PUT /api/v1/clientes/:id', () => {
     it('deberia actualizar un cliente y retornar un status code de 200', async () => {
       // Mock update to return Promise resolving to array with meaningful count
-      (Cliente.update as any).mockReturnValue(Promise.resolve([1]));
+      vi.mocked(Cliente.update).mockReturnValue(Promise.resolve([1]));
 
       const response = await request(app)
         .put('/api/v1/clientes/1')
@@ -124,7 +134,10 @@ describe('API de clientes', () => {
     it('deberia eliminar un cliente y retornar un status code de 200', async () => {
       const mockDestroy = vi.fn();
       const mockClienteInstance = { destroy: mockDestroy };
-      (Cliente.findByPk as any).mockResolvedValue(mockClienteInstance);
+
+      vi.mocked(Cliente.findByPk).mockResolvedValue(
+        mockClienteInstance as unknown as ClienteInstance,
+      );
 
       const response = await request(app).delete('/api/v1/clientes/1');
 
@@ -136,7 +149,7 @@ describe('API de clientes', () => {
     });
 
     it('deberia retornar un error con un status code de 404', async () => {
-      (Cliente.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Cliente.findByPk).mockResolvedValue(null);
 
       const response = await request(app).delete('/api/v1/clientes/999');
 

@@ -18,7 +18,8 @@ export default new (class MesaController {
   async getMesa(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const mesa = await Mesa.findByPk(id);
+      const idNumber = Number(id);
+      const mesa = await Mesa.findByPk(idNumber);
 
       if (!mesa) {
         return res.status(404).json({ message: 'No hay mesas' });
@@ -56,7 +57,8 @@ export default new (class MesaController {
   async deleteMesa(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const mesa = await Mesa.findByPk(id);
+      const idNumber = Number(id);
+      const mesa = await Mesa.findByPk(idNumber);
       if (!mesa) {
         return res.status(404).json({ message: 'No hay mesas' });
       }

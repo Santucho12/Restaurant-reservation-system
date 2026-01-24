@@ -1,13 +1,14 @@
 import { Model, DataTypes } from 'sequelize';
 import Database from '../config/dbConfig';
 
-interface ClienteAttributes {
+export interface ClienteAttributes {
   id: number;
   nombre: string;
   email: string;
 }
 
-interface ClienteInstance extends Model<ClienteAttributes>, ClienteAttributes {}
+export interface ClienteInstance
+  extends Model<ClienteAttributes>, ClienteAttributes {}
 
 const Cliente = Database.getInstance().sequelize.define<ClienteInstance>(
   'Cliente',

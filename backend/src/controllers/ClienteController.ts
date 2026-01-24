@@ -17,8 +17,9 @@ export default new (class ClienteController {
 
   async getCliente(req: Request, res: Response) {
     try {
-      const { id } = req.params;
-      const cliente = await Cliente.findByPk(id);
+      const id = req.params.id;
+      const idNumber = Number(id);
+      const cliente = await Cliente.findByPk(idNumber);
 
       if (!cliente) {
         return res.status(404).json({ message: 'No hay clientes' });
@@ -56,7 +57,8 @@ export default new (class ClienteController {
   async deleteCliente(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const cliente = await Cliente.findByPk(id);
+      const idNumber = Number(id);
+      const cliente = await Cliente.findByPk(idNumber);
       if (!cliente) {
         return res.status(404).json({ message: 'No hay clientes' });
       }

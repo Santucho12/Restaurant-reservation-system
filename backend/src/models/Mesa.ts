@@ -1,14 +1,14 @@
 import { Model, DataTypes } from 'sequelize';
 import Database from '../config/dbConfig';
 
-interface MesaAttributes {
+export interface MesaAttributes {
   id: number;
   numeroMesa: number;
   capacidad: number;
   ubicacion: 'adentro' | 'afuera';
 }
 
-interface MesaInstance extends Model<MesaAttributes>, MesaAttributes {}
+export interface MesaInstance extends Model<MesaAttributes>, MesaAttributes {}
 
 const Mesa = Database.getInstance().sequelize.define<MesaInstance>(
   'Mesa',

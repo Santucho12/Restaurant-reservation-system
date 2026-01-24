@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import Server from '../../config/appConfig';
-import Mesa from '../../models/Mesa';
+import Mesa, { MesaInstance } from '../../models/Mesa';
 
 // Mock de la base de datos para la conexion
 vi.mock('../../config/dbConfig', () => ({
@@ -44,7 +44,9 @@ describe('Api de Mesas', () => {
   describe('GET /api/v1/mesas', () => {
     it('deberia retornar un status code de 200 y todas las mesas', async () => {
       const mockMesas = [{ id: 1, numeroMesa: 1 }];
-      (Mesa.findAll as any).mockResolvedValue(mockMesas);
+      vi.mocked(Mesa.findAll).mockResolvedValue(
+        mockMesas as unknown as MesaInstance[],
+      );
 
       const response = await request(app).get('/api/v1/mesas');
 
@@ -53,7 +55,9 @@ describe('Api de Mesas', () => {
     });
 
     it('deberia retornar un error con un status code de 404 si no se encuentran mesas (mocking null return)', async () => {
-      (Mesa.findAll as any).mockResolvedValue(null);
+      vi.mocked(Mesa.findAll).mockResolvedValue(
+        null as unknown as MesaInstance[],
+      );
 
       const response = await request(app).get('/api/v1/mesas');
 
@@ -63,7 +67,7 @@ describe('Api de Mesas', () => {
 
     it('deberia retornar un error con un status code de 500 en caso de error', async () => {
       const error = new Error('Database error');
-      (Mesa.findAll as any).mockRejectedValue(error);
+      vi.mocked(Mesa.findAll).mockRejectedValue(error);
 
       const response = await request(app).get('/api/v1/mesas');
 
@@ -74,7 +78,9 @@ describe('Api de Mesas', () => {
   describe('GET /api/v1/mesas/:id', () => {
     it('deberia retornar un status code de 200 y la mesa', async () => {
       const mockMesa = { id: 1, numeroMesa: 1 };
-      (Mesa.findByPk as any).mockResolvedValue(mockMesa);
+      vi.mocked(Mesa.findByPk).mockResolvedValue(
+        mockMesa as unknown as MesaInstance,
+      );
 
       const response = await request(app).get('/api/v1/mesas/1');
 
@@ -83,7 +89,7 @@ describe('Api de Mesas', () => {
     });
 
     it('should return 404 if mesa not found', async () => {
-      (Mesa.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Mesa.findByPk).mockResolvedValue(null);
 
       const response = await request(app).get('/api/v1/mesas/999');
 
@@ -95,7 +101,9 @@ describe('Api de Mesas', () => {
     it('deberia crear una mesa y retornar un status code de 201', async () => {
       const newMesaData = { numeroMesa: 1, capacidad: 4, ubicacion: 'adentro' };
       const mockMesa = { id: 1, ...newMesaData };
-      (Mesa.create as any).mockResolvedValue(mockMesa);
+      vi.mocked(Mesa.create).mockResolvedValue(
+        mockMesa as unknown as MesaInstance,
+      );
 
       const response = await request(app)
         .post('/api/v1/mesas')
@@ -108,7 +116,9 @@ describe('Api de Mesas', () => {
 
   describe('PUT /api/v1/mesas/:id', () => {
     it('deberia actualizar una mesa y retornar un status code de 200', async () => {
-      (Mesa.update as any).mockReturnValue(Promise.resolve([1]));
+      vi.mocked(Mesa.update).mockReturnValue(
+        Promise.resolve([1] as unknown as [number]),
+      );
 
       const response = await request(app)
         .put('/api/v1/mesas/1')
@@ -119,9 +129,12 @@ describe('Api de Mesas', () => {
     });
 
     it('deberia retornar un error con un status code de 404 si la actualizacion falla (mocking falsy return)', async () => {
-      (Mesa.update as any).mockReturnValue(Promise.resolve(0)); // or null
-
-      (Mesa.update as any).mockReturnValue(null);
+      vi.mocked(Mesa.update).mockReturnValue(
+        Promise.resolve([0] as unknown as [number]),
+      ); // or null
+      vi.mocked(Mesa.update).mockReturnValue(
+        null as unknown as Promise<[number]>,
+      );
 
       const response = await request(app)
         .put('/api/v1/mesas/1')
@@ -135,7 +148,9 @@ describe('Api de Mesas', () => {
     it('deberia eliminar una mesa y retornar un status code de 200', async () => {
       const mockDestroy = vi.fn();
       const mockMesaInstance = { destroy: mockDestroy };
-      (Mesa.findByPk as any).mockResolvedValue(mockMesaInstance);
+      vi.mocked(Mesa.findByPk).mockResolvedValue(
+        mockMesaInstance as unknown as MesaInstance,
+      );
 
       const response = await request(app).delete('/api/v1/mesas/1');
 
@@ -147,7 +162,7 @@ describe('Api de Mesas', () => {
     });
 
     it('deberia retornar un error con un status code de 404 si la eliminacion falla', async () => {
-      (Mesa.findByPk as any).mockResolvedValue(null);
+      vi.mocked(Mesa.findByPk).mockResolvedValue(null);
 
       const response = await request(app).delete('/api/v1/mesas/999');
 
