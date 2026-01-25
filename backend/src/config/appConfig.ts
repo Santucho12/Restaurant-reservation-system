@@ -6,6 +6,9 @@ import cors from 'cors';
 import reservaRoutes from '../routes/reservaRoutes';
 import mesaRoutes from '../routes/mesaRoutes';
 import clienteRoutes from '../routes/clienteRoutes';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
 
 dotenv.config();
 
@@ -21,6 +24,7 @@ export default class Server {
     this.HOST = process.env.HOST?.trim() || 'localhost';
     this.middlewares();
     this.routes();
+    this.swaggerDocs();
   }
 
   public static getInstance(): Server {
@@ -53,6 +57,15 @@ export default class Server {
     this.app.use('/api/v1', clienteRoutes);
   }
 
+  private swaggerDocs(): void {
+    const swaggerPath = path.join(__dirname, '../../swagger.yaml');
+    const swaggerDocument = YAML.load(swaggerPath);
+    this.app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument),
+    );
+  }
   public listen(): void {
     this.app.listen(this.PORT, () => {
       console.log(`Servidor corriendo en: http://${this.HOST}:${this.PORT}`);
