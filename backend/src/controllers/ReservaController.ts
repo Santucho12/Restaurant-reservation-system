@@ -2,11 +2,8 @@
 import { Request, Response } from 'express';
 import Reserva from '../models/Reserva';
 import ReservaService from '../services/ReservaService';
-import { ValidadorReservas } from '../patterns/strategies/ValidadorReservas';
-import { ValidationData } from '../patterns/strategies/ValidacionStrategy';
-import { SuperposicionStrategy } from '../patterns/strategies/SuperposicionStrategy';
-import { CapacidadStrategy } from '../patterns/strategies/CapacidadStrategy';
-import { TurnoStrategy } from '../patterns/strategies/TurnoStrategy';
+import { ReservaFactory } from '../patterns/factories/ReservaFactory';
+import { ValidationData } from '../patterns/strategies/ValidacionRule';
 
 export default new (class ReservaController {
   async getAllReservas(req: Request, res: Response) {
@@ -39,19 +36,16 @@ export default new (class ReservaController {
 
   async createReserva(req: Request, res: Response) {
     try {
-      const validator = new ValidadorReservas();
-      validator.agregarStrategy(new SuperposicionStrategy());
-      validator.agregarStrategy(new CapacidadStrategy());
-      validator.agregarStrategy(new TurnoStrategy());
+      const validator = ReservaFactory.createValidator();
 
-      await validator.validar(req.body as ValidationData);
+      await validator.validateAll(req.body as ValidationData);
 
-      const newReserva = await ReservaService.createReserva(req.body);
+      const newReserva = await ReservaFactory.createReserva(req.body);
       res.status(201).json(newReserva);
     } catch (error) {
       if (
         (error as Error).message ===
-          'La mesa ya esta reservada en ese horario' ||
+        'La mesa ya esta reservada en ese horario' ||
         (error as Error).message.includes('capacidad') ||
         (error as Error).message.includes('horario')
       ) {
