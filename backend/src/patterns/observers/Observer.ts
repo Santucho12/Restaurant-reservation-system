@@ -1,4 +1,4 @@
-import { ReservaInstance } from '../models/Reserva';
+import { ReservaInstance } from '../../models/Reserva';
 
 export interface IObserver {
   update(reserva: ReservaInstance): void;
