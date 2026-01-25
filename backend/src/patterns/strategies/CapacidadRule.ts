@@ -1,7 +1,7 @@
-import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
+import { ValidationRule, ValidationData } from './ValidacionRule';
 import Mesa from '../../models/Mesa';
 
-export class CapacidadStrategy implements ValidacionStrategy {
+export class CapacidadRule implements ValidationRule {
   async validar(datos: ValidationData): Promise<void> {
     const { id, capacidad } = datos;
 

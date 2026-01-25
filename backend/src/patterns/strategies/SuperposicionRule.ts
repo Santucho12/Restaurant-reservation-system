@@ -1,8 +1,8 @@
-import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
+import { ValidationRule, ValidationData } from './ValidacionRule';
 import Reserva from '../../models/Reserva';
 import { Op } from 'sequelize';
 
-export class SuperposicionStrategy implements ValidacionStrategy {
+export class SuperposicionRule implements ValidationRule {
   async validar(datos: ValidationData): Promise<void> {
     const { mesaId, 'fecha/hora': fechaInicio, fechaFin } = datos;
 

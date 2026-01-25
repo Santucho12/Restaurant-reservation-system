@@ -43,18 +43,28 @@ vi.mock('../../services/ReservaService', () => ({
   default: mockedReservaService,
 }));
 
-import { ValidadorReservas } from '../../patterns/strategies/ValidadorReservas';
+import { ReservationValidator } from '../../patterns/strategies/ReservationValidator';
 
-vi.mock('../../patterns/strategies/SuperposicionStrategy', () => ({
-  SuperposicionStrategy: class {},
+vi.mock('../../patterns/strategies/SuperposicionRule', () => ({
+  SuperposicionRule: class {},
 }));
 
-vi.mock('../../patterns/strategies/CapacidadStrategy', () => ({
-  CapacidadStrategy: class {},
+vi.mock('../../patterns/strategies/CapacidadRule', () => ({
+  CapacidadRule: class {},
 }));
 
-vi.mock('../../patterns/strategies/TurnoStrategy', () => ({
-  TurnoStrategy: class {},
+vi.mock('../../patterns/strategies/TurnoRule', () => ({
+  TurnoRule: class {},
+}));
+
+// Mock Factory
+vi.mock('../../patterns/factories/ReservaFactory', () => ({
+  ReservaFactory: {
+    createValidator: vi
+      .fn()
+      .mockImplementation(() => new ReservationValidator()),
+    createReserva: mockedReservaService.createReserva,
+  },
 }));
 
 const app = Server.getInstance().getApp();
@@ -64,10 +74,10 @@ describe('API de reservas', () => {
     vi.clearAllMocks();
     mockedReservaService.createReserva.mockResolvedValue({ id: 1 });
     vi.restoreAllMocks();
-    vi.spyOn(ValidadorReservas.prototype, 'agregarStrategy').mockImplementation(
+    vi.spyOn(ReservationValidator.prototype, 'addRule').mockImplementation(
       () => {},
     );
-    vi.spyOn(ValidadorReservas.prototype, 'validar').mockResolvedValue(
+    vi.spyOn(ReservationValidator.prototype, 'validateAll').mockResolvedValue(
       undefined,
     );
   });
@@ -136,7 +146,7 @@ describe('API de reservas', () => {
       const errorMsg = 'La mesa ya esta reservada en ese horario';
       const error = { message: errorMsg };
 
-      vi.spyOn(ValidadorReservas.prototype, 'validar').mockRejectedValue(
+      vi.spyOn(ReservationValidator.prototype, 'validateAll').mockRejectedValue(
         error as unknown,
       );
 
@@ -150,7 +160,7 @@ describe('API de reservas', () => {
       const error = new Error('Error inesperado');
       mockedReservaService.createReserva.mockRejectedValue(error);
 
-      vi.spyOn(ValidadorReservas.prototype, 'validar').mockResolvedValue(
+      vi.spyOn(ReservationValidator.prototype, 'validateAll').mockResolvedValue(
         undefined,
       );
 

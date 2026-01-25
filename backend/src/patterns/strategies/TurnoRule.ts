@@ -1,6 +1,6 @@
-import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
+import { ValidationRule, ValidationData } from './ValidacionRule';
 
-export class TurnoStrategy implements ValidacionStrategy {
+export class TurnoRule implements ValidationRule {
   async validar(datos: ValidationData): Promise<void> {
     const { 'fecha/hora': fechaInicio } = datos;
     const fecha = new Date(fechaInicio);
