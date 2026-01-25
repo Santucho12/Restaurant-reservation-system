@@ -43,17 +43,17 @@ vi.mock('../../services/ReservaService', () => ({
   default: mockedReservaService,
 }));
 
-import { ValidadorReservas } from '../../strategies/ValidadorReservas';
+import { ValidadorReservas } from '../../patterns/strategies/ValidadorReservas';
 
-vi.mock('../../strategies/SuperposicionStrategy', () => ({
+vi.mock('../../patterns/strategies/SuperposicionStrategy', () => ({
   SuperposicionStrategy: class {},
 }));
 
-vi.mock('../../strategies/CapacidadStrategy', () => ({
+vi.mock('../../patterns/strategies/CapacidadStrategy', () => ({
   CapacidadStrategy: class {},
 }));
 
-vi.mock('../../strategies/TurnoStrategy', () => ({
+vi.mock('../../patterns/strategies/TurnoStrategy', () => ({
   TurnoStrategy: class {},
 }));
 

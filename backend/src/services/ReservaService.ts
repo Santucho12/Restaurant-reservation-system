@@ -1,6 +1,6 @@
 import Reserva from '../models/Reserva';
 import { ReservaSubject } from '../models/Reserva';
-import { EmailNotifier } from '../observers/EmailNotifier';
+import { EmailNotifier } from '../patterns/observers/EmailNotifier';
 import { Op } from 'sequelize';
 import { ReservaAttributes } from '../models/Reserva';
 

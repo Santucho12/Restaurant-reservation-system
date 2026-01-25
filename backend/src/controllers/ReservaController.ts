@@ -2,11 +2,11 @@
 import { Request, Response } from 'express';
 import Reserva from '../models/Reserva';
 import ReservaService from '../services/ReservaService';
-import { ValidadorReservas } from '../strategies/ValidadorReservas';
-import { ValidationData } from '../strategies/ValidacionStrategy';
-import { SuperposicionStrategy } from '../strategies/SuperposicionStrategy';
-import { CapacidadStrategy } from '../strategies/CapacidadStrategy';
-import { TurnoStrategy } from '../strategies/TurnoStrategy';
+import { ValidadorReservas } from '../patterns/strategies/ValidadorReservas';
+import { ValidationData } from '../patterns/strategies/ValidacionStrategy';
+import { SuperposicionStrategy } from '../patterns/strategies/SuperposicionStrategy';
+import { CapacidadStrategy } from '../patterns/strategies/CapacidadStrategy';
+import { TurnoStrategy } from '../patterns/strategies/TurnoStrategy';
 
 export default new (class ReservaController {
   async getAllReservas(req: Request, res: Response) {
