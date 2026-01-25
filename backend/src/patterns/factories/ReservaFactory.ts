@@ -6,15 +6,15 @@ import { SuperposicionRule } from '../strategies/SuperposicionRule';
 import { TurnoRule } from '../strategies/TurnoRule';
 
 export class ReservaFactory {
-    static createValidator(): ReservationValidator {
-        const validator = new ReservationValidator();
-        validator.addRule(new SuperposicionRule());
-        validator.addRule(new CapacidadRule());
-        validator.addRule(new TurnoRule());
-        return validator;
-    }
+  static createValidator(): ReservationValidator {
+    const validator = new ReservationValidator();
+    validator.addRule(new SuperposicionRule());
+    validator.addRule(new CapacidadRule());
+    validator.addRule(new TurnoRule());
+    return validator;
+  }
 
-    static async createReserva(data: ReservaAttributes) {
-        return ReservaService.createReserva(data);
-    }
+  static async createReserva(data: ReservaAttributes) {
+    return ReservaService.createReserva(data);
+  }
 }

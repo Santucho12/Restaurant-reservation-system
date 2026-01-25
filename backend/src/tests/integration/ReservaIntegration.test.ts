@@ -46,21 +46,23 @@ vi.mock('../../services/ReservaService', () => ({
 import { ReservationValidator } from '../../patterns/strategies/ReservationValidator';
 
 vi.mock('../../patterns/strategies/SuperposicionRule', () => ({
-  SuperposicionRule: class { },
+  SuperposicionRule: class {},
 }));
 
 vi.mock('../../patterns/strategies/CapacidadRule', () => ({
-  CapacidadRule: class { },
+  CapacidadRule: class {},
 }));
 
 vi.mock('../../patterns/strategies/TurnoRule', () => ({
-  TurnoRule: class { },
+  TurnoRule: class {},
 }));
 
 // Mock Factory
 vi.mock('../../patterns/factories/ReservaFactory', () => ({
   ReservaFactory: {
-    createValidator: vi.fn().mockImplementation(() => new ReservationValidator()),
+    createValidator: vi
+      .fn()
+      .mockImplementation(() => new ReservationValidator()),
     createReserva: mockedReservaService.createReserva,
   },
 }));
@@ -73,7 +75,7 @@ describe('API de reservas', () => {
     mockedReservaService.createReserva.mockResolvedValue({ id: 1 });
     vi.restoreAllMocks();
     vi.spyOn(ReservationValidator.prototype, 'addRule').mockImplementation(
-      () => { },
+      () => {},
     );
     vi.spyOn(ReservationValidator.prototype, 'validateAll').mockResolvedValue(
       undefined,

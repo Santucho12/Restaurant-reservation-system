@@ -1,7 +1,6 @@
 // Lógica de reservas
 import { Request, Response } from 'express';
 import Reserva from '../models/Reserva';
-import ReservaService from '../services/ReservaService';
 import { ReservaFactory } from '../patterns/factories/ReservaFactory';
 import { ValidationData } from '../patterns/strategies/ValidacionRule';
 
@@ -45,7 +44,7 @@ export default new (class ReservaController {
     } catch (error) {
       if (
         (error as Error).message ===
-        'La mesa ya esta reservada en ese horario' ||
+          'La mesa ya esta reservada en ese horario' ||
         (error as Error).message.includes('capacidad') ||
         (error as Error).message.includes('horario')
       ) {
