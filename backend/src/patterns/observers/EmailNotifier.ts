@@ -1,5 +1,5 @@
 import { IObserver } from './Observer';
-import { ReservaAttributes } from '../models/Reserva';
+import { ReservaAttributes } from '../../models/Reserva';
 
 export class EmailNotifier implements IObserver {
   update(reserva: ReservaAttributes): void {
