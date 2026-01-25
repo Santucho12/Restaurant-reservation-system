@@ -1,5 +1,5 @@
 import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
-import Reserva from '../models/Reserva';
+import Reserva from '../../models/Reserva';
 import { Op } from 'sequelize';
 
 export class SuperposicionStrategy implements ValidacionStrategy {

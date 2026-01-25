@@ -1,5 +1,5 @@
 import { ValidacionStrategy, ValidationData } from './ValidacionStrategy';
-import Mesa from '../models/Mesa';
+import Mesa from '../../models/Mesa';
 
 export class CapacidadStrategy implements ValidacionStrategy {
   async validar(datos: ValidationData): Promise<void> {
