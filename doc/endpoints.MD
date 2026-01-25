@@ -1,3 +1,13 @@
+## 📖 Documentación interactiva (Swagger UI)
+
+podes consultar y probar los endpoints de esta api de forma visual e interactiva entrando a:
+
+```
+http://localhost:3000/api-docs
+```
+
+> si cambias el puerto o el host en el archivo `.env`, reemplaza esos valores en la URL.
+
 # Documentación de Endpoints - Reservas
 
 ---
