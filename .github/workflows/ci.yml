@@ -21,12 +21,12 @@ jobs:
             - name: Instalar dependencias con npm ci
               run: npm ci
               working-directory: backend
-            - name: Correr tests
-              run: npm run test
-              working-directory: backend
             - name: Correr eslint
               run: npm run lint
               working-directory: backend
             - name: Formatear codigo
               run: npm run format:check
+              working-directory: backend
+            - name: Correr tests
+              run: npm run test
               working-directory: backend
