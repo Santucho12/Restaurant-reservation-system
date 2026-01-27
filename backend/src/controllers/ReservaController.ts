@@ -1,19 +1,20 @@
 // Lógica de reservas
 import { Request, Response } from 'express';
 import Reserva from '../models/Reserva';
-import { ReservaFactory } from '../patterns/factories/ReservaFactory';
 import { ValidationData } from '../patterns/strategies/ValidacionRule';
+import { ReservaFactory } from '../patterns/factories/ReservaFactory';
+import ErrorHandler from '../utils/ErrorHandler';
 
 export default new (class ReservaController {
   async getAllReservas(req: Request, res: Response) {
     try {
       const reserva = await Reserva.findAll();
       if (!reserva) {
-        return res.status(404).json({ message: 'No hay reservas' });
+        return ErrorHandler.notFoundErrorReserva(res);
       }
       res.status(200).json(reserva);
     } catch (error) {
-      res.status(500).json({ error: error });
+      ErrorHandler.serverInternalError(res, error as Error);
     }
   }
 
@@ -24,12 +25,12 @@ export default new (class ReservaController {
       const reserva = await Reserva.findByPk(idNumber);
 
       if (!reserva) {
-        return res.status(404).json({ message: 'No hay reservas' });
+        return ErrorHandler.notFoundErrorReserva(res);
       }
 
       res.status(200).json(reserva);
     } catch (error) {
-      res.status(500).json({ error: error });
+      ErrorHandler.serverInternalError(res, error as Error);
     }
   }
 
@@ -48,23 +49,26 @@ export default new (class ReservaController {
         (error as Error).message.includes('capacidad') ||
         (error as Error).message.includes('horario')
       ) {
-        return res.status(400).json({ message: (error as Error).message });
+        return ErrorHandler.badRequestErrorReserva(
+          res,
+          (error as Error).message,
+        );
       }
-      res.status(500).json({ error: error });
+      ErrorHandler.serverInternalError(res, error as Error);
     }
   }
 
   async updateReserva(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
-      const updateReserva = Reserva.update(req.body, { where: { id } });
+      const updateReserva = await Reserva.update(req.body, { where: { id } });
       if (!updateReserva) {
-        return res.status(404).json({ message: 'No hay reservas' });
+        return ErrorHandler.notFoundErrorReserva(res);
       }
 
       res.status(200).json({ message: 'Reserva actualizada' });
     } catch (error) {
-      res.status(500).json({ error: error });
+      ErrorHandler.serverInternalError(res, error as Error);
     }
   }
 
@@ -74,15 +78,15 @@ export default new (class ReservaController {
       const idNumber = Number(id);
       const reserva = await Reserva.findByPk(idNumber);
       if (!reserva) {
-        return res.status(404).json({ message: 'No hay reservas' });
+        return ErrorHandler.notFoundErrorReserva(res);
       }
 
-      reserva.destroy();
+      await reserva.destroy();
       return res
         .status(200)
         .json({ message: 'Reserva eliminada satisfactoriamente' });
     } catch (error) {
-      res.status(500).json({ error: error });
+      ErrorHandler.serverInternalError(res, error as Error);
     }
   }
 })();
