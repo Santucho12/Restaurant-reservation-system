@@ -1,0 +1,109 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { CapacidadRule } from '../../patterns/strategies/CapacidadRule';
+import { SuperposicionRule } from '../../patterns/strategies/SuperposicionRule';
+import Mesa, { MesaInstance } from '../../models/Mesa';
+import Reserva, { ReservaInstance } from '../../models/Reserva';
+import { ValidationData } from '../../patterns/strategies/ValidacionRule';
+
+// Modelos mockeados
+vi.mock('../../models/Mesa', () => ({
+  default: {
+    findByPk: vi.fn(),
+  },
+}));
+
+vi.mock('../../models/Reserva', () => ({
+  default: {
+    findOne: vi.fn(),
+  },
+}));
+
+vi.mock('sequelize', () => {
+  return {
+    Op: {
+      ne: Symbol('ne'),
+      lt: Symbol('lt'),
+      gt: Symbol('gt'),
+    },
+    Model: class {},
+    DataTypes: {},
+  };
+});
+
+describe('ValidationRules', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('CapacidadRule', () => {
+    it('debería validar correctamente si la capacidad es suficiente', async () => {
+      const rule = new CapacidadRule();
+      const mockMesa = { id: 1, capacidad: 4 } as unknown as MesaInstance;
+      const datos = { id: 1, capacidad: 2 } as unknown as ValidationData;
+
+      vi.mocked(Mesa.findByPk).mockResolvedValue(mockMesa);
+
+      await expect(rule.validar(datos)).resolves.toBeUndefined();
+    });
+
+    it('debería lanzar error si la capacidad de la mesa es insuficiente', async () => {
+      const rule = new CapacidadRule();
+      const mockMesa = { id: 1, capacidad: 2 } as unknown as MesaInstance;
+      const datos = { id: 1, capacidad: 4 } as unknown as ValidationData;
+
+      vi.mocked(Mesa.findByPk).mockResolvedValue(mockMesa);
+
+      await expect(rule.validar(datos)).rejects.toThrow(
+        'La capacidad de la mesa (2) es insuficiente para 4 personas',
+      );
+    });
+
+    it('debería lanzar error si la mesa no existe', async () => {
+      const rule = new CapacidadRule();
+      const datos = { id: 999, capacidad: 2 } as unknown as ValidationData;
+
+      vi.mocked(Mesa.findByPk).mockResolvedValue(null);
+
+      await expect(rule.validar(datos)).rejects.toThrow('Mesa no encontrada');
+    });
+  });
+
+  describe('SuperposicionRule', () => {
+    it('debería validar si no hay superposición de horarios', async () => {
+      const rule = new SuperposicionRule();
+      const datos = {
+        mesaId: 1,
+        'fecha/hora': new Date('2023-10-27T20:00:00'),
+        fechaFin: new Date('2023-10-27T22:00:00'),
+      } as unknown as ValidationData;
+
+      vi.mocked(Reserva.findOne).mockResolvedValue(null);
+
+      await expect(rule.validar(datos)).resolves.toBeUndefined();
+      expect(Reserva.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            mesaId: 1,
+          }),
+        }),
+      );
+    });
+
+    it('debería lanzar error si hay superposición', async () => {
+      const rule = new SuperposicionRule();
+      const datos = {
+        mesaId: 1,
+        'fecha/hora': new Date('2023-10-27T20:00:00'),
+        fechaFin: new Date('2023-10-27T22:00:00'),
+      } as unknown as ValidationData;
+
+      vi.mocked(Reserva.findOne).mockResolvedValue({
+        id: 2,
+      } as unknown as ReservaInstance);
+
+      await expect(rule.validar(datos)).rejects.toThrow(
+        'La mesa ya esta reservada en ese horario',
+      );
+    });
+  });
+});
