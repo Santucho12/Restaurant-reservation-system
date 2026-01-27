@@ -8,7 +8,7 @@ export default new (class MesaController {
     try {
       const mesa = await Mesa.findAll();
       if (!mesa) {
-        return ErrorHandler.notFoundErrorMesa(res);
+        return ErrorHandler.notFoundErrorMesa(res, ErrorHandler.getMessage('noMesas'));
       }
       res.status(200).json(mesa);
     } catch (error) {
