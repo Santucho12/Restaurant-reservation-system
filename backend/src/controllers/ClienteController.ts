@@ -65,7 +65,9 @@ export default new (class ClienteController {
       }
 
       await cliente.destroy();
-      return res.status(200).json({ message: 'Cliente eliminado satisfactoriamente' });
+      return res
+        .status(200)
+        .json({ message: 'Cliente eliminado satisfactoriamente' });
     } catch (error) {
       ErrorHandler.serverInternalError(res, error as Error);
     }

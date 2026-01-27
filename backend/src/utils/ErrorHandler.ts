@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-type ErrorDetail = string | string[] | Record<string, any>;
+type ErrorDetail = string | string[] | Record<string, unknown>;
 
 class ErrorHandlerClass {
   private messages: Record<string, string> = {
@@ -33,10 +33,10 @@ class ErrorHandlerClass {
     messageKey: string,
     customMessage?: string,
     details?: ErrorDetail,
-    asMessage: boolean = false
+    asMessage: boolean = false,
   ): Response {
     const msg = customMessage || this.getMessage(messageKey);
-    let payload: any;
+    let payload: Record<string, unknown>;
     if (asMessage) {
       payload = { message: msg };
       if (details) payload = { message: details };
@@ -47,15 +47,28 @@ class ErrorHandlerClass {
     return res.status(status).json(payload);
   }
 
-  public notFound(res: Response, messageKey = 'notFound', customMessage?: string) {
+  public notFound(
+    res: Response,
+    messageKey = 'notFound',
+    customMessage?: string,
+  ) {
     return this.error(res, 404, messageKey, customMessage, undefined, true);
   }
 
-  public badRequest(res: Response, messageKey = 'badRequest', customMessage?: string, details?: ErrorDetail) {
+  public badRequest(
+    res: Response,
+    messageKey = 'badRequest',
+    customMessage?: string,
+    details?: ErrorDetail,
+  ) {
     return this.error(res, 400, messageKey, customMessage, details, true);
   }
 
-  public serverInternalError(res: Response, error?: Error, customMessage?: string) {
+  public serverInternalError(
+    res: Response,
+    error?: Error,
+    customMessage?: string,
+  ) {
     if (error) console.error(error);
     return this.error(res, 500, 'serverError', customMessage);
   }
@@ -68,7 +81,11 @@ class ErrorHandlerClass {
     return this.error(res, 403, 'forbidden', customMessage);
   }
 
-  public validationError(res: Response, details?: ErrorDetail, customMessage?: string) {
+  public validationError(
+    res: Response,
+    details?: ErrorDetail,
+    customMessage?: string,
+  ) {
     return this.error(res, 422, 'validationError', customMessage, details);
   }
 

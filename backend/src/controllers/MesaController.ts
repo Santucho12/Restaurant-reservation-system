@@ -8,7 +8,10 @@ export default new (class MesaController {
     try {
       const mesa = await Mesa.findAll();
       if (!mesa) {
-        return ErrorHandler.notFoundErrorMesa(res, ErrorHandler.getMessage('noMesas'));
+        return ErrorHandler.notFoundErrorMesa(
+          res,
+          ErrorHandler.getMessage('noMesas'),
+        );
       }
       res.status(200).json(mesa);
     } catch (error) {
@@ -65,7 +68,9 @@ export default new (class MesaController {
       }
 
       await mesa.destroy();
-      return res.status(200).json({ message: 'Mesa eliminada satisfactoriamente' });
+      return res
+        .status(200)
+        .json({ message: 'Mesa eliminada satisfactoriamente' });
     } catch (error) {
       ErrorHandler.serverInternalError(res, error as Error);
     }

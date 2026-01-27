@@ -44,11 +44,15 @@ export default new (class ReservaController {
       res.status(201).json(newReserva);
     } catch (error) {
       if (
-        (error as Error).message === 'La mesa ya esta reservada en ese horario' ||
+        (error as Error).message ===
+          'La mesa ya esta reservada en ese horario' ||
         (error as Error).message.includes('capacidad') ||
         (error as Error).message.includes('horario')
       ) {
-        return ErrorHandler.badRequestErrorReserva(res, (error as Error).message);
+        return ErrorHandler.badRequestErrorReserva(
+          res,
+          (error as Error).message,
+        );
       }
       ErrorHandler.serverInternalError(res, error as Error);
     }
@@ -78,7 +82,9 @@ export default new (class ReservaController {
       }
 
       await reserva.destroy();
-      return res.status(200).json({ message: 'Reserva eliminada satisfactoriamente' });
+      return res
+        .status(200)
+        .json({ message: 'Reserva eliminada satisfactoriamente' });
     } catch (error) {
       ErrorHandler.serverInternalError(res, error as Error);
     }
