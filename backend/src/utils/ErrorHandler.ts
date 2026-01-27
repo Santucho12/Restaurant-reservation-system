@@ -7,6 +7,7 @@ class ErrorHandlerClass {
     reservaNotFound: 'Reserva no encontrada',
     reservaNotDeleted: 'No se pudo eliminar la reserva',
     mesaNotFound: 'Mesa no encontrada',
+    noMesas: 'No hay mesas',
     mesaNotDeleted: 'No se pudo eliminar la mesa',
     clienteNotFound: 'Cliente no encontrado',
     clienteNotDeleted: 'No se pudo eliminar el cliente',
@@ -31,20 +32,27 @@ class ErrorHandlerClass {
     status: number,
     messageKey: string,
     customMessage?: string,
-    details?: ErrorDetail
+    details?: ErrorDetail,
+    asMessage: boolean = false
   ): Response {
     const msg = customMessage || this.getMessage(messageKey);
-    const payload: any = { error: msg };
-    if (details) payload.details = details;
+    let payload: any;
+    if (asMessage) {
+      payload = { message: msg };
+      if (details) payload = { message: details };
+    } else {
+      payload = { error: msg };
+      if (details) payload.details = details;
+    }
     return res.status(status).json(payload);
   }
 
   public notFound(res: Response, messageKey = 'notFound', customMessage?: string) {
-    return this.error(res, 404, messageKey, customMessage);
+    return this.error(res, 404, messageKey, customMessage, undefined, true);
   }
 
   public badRequest(res: Response, messageKey = 'badRequest', customMessage?: string, details?: ErrorDetail) {
-    return this.error(res, 400, messageKey, customMessage, details);
+    return this.error(res, 400, messageKey, customMessage, details, true);
   }
 
   public serverInternalError(res: Response, error?: Error, customMessage?: string) {
@@ -65,23 +73,23 @@ class ErrorHandlerClass {
   }
 
   // Métodos específicos para recursos
-  public notFoundErrorReserva(res: Response) {
-    return this.notFound(res, 'reservaNotFound');
+  public notFoundErrorReserva(res: Response, customMessage?: string) {
+    return this.notFound(res, 'reservaNotFound', customMessage);
   }
   public badRequestErrorReserva(res: Response, details?: ErrorDetail) {
-    return this.badRequest(res, 'reservaNotDeleted', undefined, details);
+    return this.badRequest(res, 'badRequest', undefined, details);
   }
-  public notFoundErrorMesa(res: Response) {
-    return this.notFound(res, 'mesaNotFound');
+  public notFoundErrorMesa(res: Response, customMessage?: string) {
+    return this.notFound(res, 'mesaNotFound', customMessage);
   }
   public badRequestErrorMesa(res: Response, details?: ErrorDetail) {
-    return this.badRequest(res, 'mesaNotDeleted', undefined, details);
+    return this.badRequest(res, 'badRequest', undefined, details);
   }
-  public notFoundErrorCliente(res: Response) {
-    return this.notFound(res, 'clienteNotFound');
+  public notFoundErrorCliente(res: Response, customMessage?: string) {
+    return this.notFound(res, 'clienteNotFound', customMessage);
   }
   public badRequestErrorCliente(res: Response, details?: ErrorDetail) {
-    return this.badRequest(res, 'clienteNotDeleted', undefined, details);
+    return this.badRequest(res, 'badRequest', undefined, details);
   }
 }
 
