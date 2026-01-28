@@ -1,0 +1,27 @@
+{
+  "name": "restaurant-reservation-system",
+  "version": "1.0.0",
+  "description": "Este proyecto es un sistema web que permite a los clientes reservar mesas en un restaurante de manera rápida y sencilla.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Santucho12/Restaurant-reservation-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Santucho12/Restaurant-reservation-system/issues"
+  },
+  "homepage": "https://github.com/Santucho12/Restaurant-reservation-system#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
