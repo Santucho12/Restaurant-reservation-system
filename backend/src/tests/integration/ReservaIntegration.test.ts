@@ -29,6 +29,42 @@ vi.mock('../../config/dbConfig', () => ({
   },
 }));
 
+// Mock del modelo Mesa
+vi.mock('../../models/Mesa', () => {
+  return {
+    default: {
+      findAll: vi.fn(),
+      findByPk: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      destroy: vi.fn(),
+    },
+  };
+});
+
+// Mock del modelo Cliente
+vi.mock('../../models/Cliente', () => {
+  return {
+    default: {
+      findByPk: vi.fn(),
+    },
+  };
+});
+
+// Mock del modelo Usuario para evitar inicialización con DB mock
+vi.mock('../../models/Usuario', () => ({
+  default: {
+    init: vi.fn(),
+    findOne: vi.fn(),
+  },
+}));
+
+import { Request, Response, NextFunction } from 'express';
+// Mock del middleware de auth para bypass
+vi.mock('../../middleware/authMiddleware', () => ({
+  authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+}));
+
 vi.mock('../../models/Reserva', () => ({
   default: {
     findAll: vi.fn(),
