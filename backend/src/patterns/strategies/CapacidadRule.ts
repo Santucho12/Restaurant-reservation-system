@@ -3,9 +3,9 @@ import Mesa from '../../models/Mesa';
 
 export class CapacidadRule implements ValidationRule {
   async validar(datos: ValidationData): Promise<void> {
-    const { id, capacidad } = datos;
+    const { mesaId, capacidad } = datos;
 
-    const mesa = await Mesa.findByPk(id);
+    const mesa = await Mesa.findByPk(mesaId);
     if (!mesa) {
       throw new Error('Mesa no encontrada');
     }

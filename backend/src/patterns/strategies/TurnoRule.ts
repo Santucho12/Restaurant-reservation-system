@@ -4,7 +4,7 @@ export class TurnoRule implements ValidationRule {
   async validar(datos: ValidationData): Promise<void> {
     const { 'fecha/hora': fechaInicio } = datos;
     const fecha = new Date(fechaInicio);
-    const hora = fecha.getHours();
+    const hora = fecha.getUTCHours();
 
     const esAlmuerzo = hora >= 12 && hora < 15;
     const esCena = hora >= 20 && hora < 23;
