@@ -32,20 +32,6 @@ vi.mock('../../models/Cliente', () => {
   };
 });
 
-// Mock del modelo Usuario para evitar inicialización con DB mock
-vi.mock('../../models/Usuario', () => ({
-  default: {
-    init: vi.fn(),
-    findOne: vi.fn(),
-  },
-}));
-
-import { Request, Response, NextFunction } from 'express';
-// Mock del middleware de auth para bypass
-vi.mock('../../middleware/authMiddleware', () => ({
-  authenticate: (req: Request, res: Response, next: NextFunction) => next(),
-}));
-
 const app = Server.getInstance().getApp();
 
 describe('API de clientes', () => {
