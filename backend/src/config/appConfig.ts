@@ -6,6 +6,7 @@ import cors from 'cors';
 import reservaRoutes from '../routes/reservaRoutes';
 import mesaRoutes from '../routes/mesaRoutes';
 import clienteRoutes from '../routes/clienteRoutes';
+import authRoutes from '../routes/authRoutes';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
@@ -52,6 +53,7 @@ export default class Server {
       }),
     );
 
+    this.app.use('/api/v1', authRoutes);
     this.app.use('/api/v1', reservaRoutes);
     this.app.use('/api/v1', mesaRoutes);
     this.app.use('/api/v1', clienteRoutes);
