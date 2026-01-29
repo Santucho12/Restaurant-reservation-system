@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CapacidadRule } from '../../patterns/strategies/CapacidadRule';
 import { SuperposicionRule } from '../../patterns/strategies/SuperposicionRule';
+import { TurnoRule } from '../../patterns/strategies/TurnoRule';
 import Mesa, { MesaInstance } from '../../models/Mesa';
 import Reserva, { ReservaInstance } from '../../models/Reserva';
 import { ValidationData } from '../../patterns/strategies/ValidacionRule';
@@ -39,7 +40,7 @@ describe('ValidationRules', () => {
     it('debería validar correctamente si la capacidad es suficiente', async () => {
       const rule = new CapacidadRule();
       const mockMesa = { id: 1, capacidad: 4 } as unknown as MesaInstance;
-      const datos = { id: 1, capacidad: 2 } as unknown as ValidationData;
+      const datos = { mesaId: 1, capacidad: 2 } as unknown as ValidationData;
 
       vi.mocked(Mesa.findByPk).mockResolvedValue(mockMesa);
 
@@ -49,7 +50,7 @@ describe('ValidationRules', () => {
     it('debería lanzar error si la capacidad de la mesa es insuficiente', async () => {
       const rule = new CapacidadRule();
       const mockMesa = { id: 1, capacidad: 2 } as unknown as MesaInstance;
-      const datos = { id: 1, capacidad: 4 } as unknown as ValidationData;
+      const datos = { mesaId: 1, capacidad: 4 } as unknown as ValidationData;
 
       vi.mocked(Mesa.findByPk).mockResolvedValue(mockMesa);
 
@@ -60,7 +61,7 @@ describe('ValidationRules', () => {
 
     it('debería lanzar error si la mesa no existe', async () => {
       const rule = new CapacidadRule();
-      const datos = { id: 999, capacidad: 2 } as unknown as ValidationData;
+      const datos = { mesaId: 999, capacidad: 2 } as unknown as ValidationData;
 
       vi.mocked(Mesa.findByPk).mockResolvedValue(null);
 
@@ -103,6 +104,37 @@ describe('ValidationRules', () => {
 
       await expect(rule.validar(datos)).rejects.toThrow(
         'La mesa ya esta reservada en ese horario',
+      );
+    });
+  });
+
+  describe('TurnoRule', () => {
+    it('debería validar correctamente horario de almuerzo (13:00 UTC)', async () => {
+      const rule = new TurnoRule();
+      const datos = {
+        'fecha/hora': new Date('2023-10-27T13:00:00Z'),
+      } as unknown as ValidationData;
+
+      await expect(rule.validar(datos)).resolves.toBeUndefined();
+    });
+
+    it('debería validar correctamente horario de cena (21:00 UTC)', async () => {
+      const rule = new TurnoRule();
+      const datos = {
+        'fecha/hora': new Date('2023-10-27T21:00:00Z'),
+      } as unknown as ValidationData;
+
+      await expect(rule.validar(datos)).resolves.toBeUndefined();
+    });
+
+    it('debería lanzar error fuera de horario permitido (17:00 UTC)', async () => {
+      const rule = new TurnoRule();
+      const datos = {
+        'fecha/hora': new Date('2023-10-27T17:00:00Z'),
+      } as unknown as ValidationData;
+
+      await expect(rule.validar(datos)).rejects.toThrow(
+        'La reserva debe ser en horario de almuerzo (12-15) o cena (20-23)',
       );
     });
   });
