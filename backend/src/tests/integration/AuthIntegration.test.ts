@@ -46,16 +46,15 @@ describe('Pruebas de Integración de Autenticación', () => {
   let validToken = '';
 
   it('debería registrar y luego iniciar sesión exitosamente', async () => {
-    // 1. Setup mocks for Register
-    // findOne returns null (user doesn't exist)
+    // 1. Configuramos mock para el registro
     vi.mocked(Usuario.findOne).mockResolvedValueOnce(null);
 
-    // create returns the new user
+    // retornamos un nuevo usuario
     const newUser = {
       id: 1,
       nombre: 'Administrador Pruebas',
       email: 'admin@test.com',
-      password_hash: 'hashed_password', // Mocked hash
+      password_hash: 'hashed_password', // hash mockeado
       dataValues: { password_hash: 'hashed_password' },
     } as unknown as Usuario;
     vi.mocked(Usuario.create).mockResolvedValueOnce(newUser);
@@ -68,8 +67,8 @@ describe('Pruebas de Integración de Autenticación', () => {
 
     expect(regResponse.status).toBe(201);
 
-    // 2. Setup mocks for Login
-    // We need a real hash because AuthService uses real bcrypt.compare
+    // 2. Configuramos mock para el login
+    // Necesitamos un hash real porque AuthService usa bcrypt.compare real
     const realHash = await bcrypt.hash('password123', 10);
     const existingUser = {
       id: 1,
@@ -79,7 +78,7 @@ describe('Pruebas de Integración de Autenticación', () => {
       toJSON: () => ({ id: 1, email: 'admin@test.com' }),
     } as unknown as Usuario;
 
-    // findOne returns the user with the real hash
+    // findOne retorna el usuario con el hash real
     vi.mocked(Usuario.findOne).mockResolvedValue(existingUser);
 
     const loginResponse = await request(app).post('/api/v1/login').send({
@@ -93,7 +92,7 @@ describe('Pruebas de Integración de Autenticación', () => {
   });
 
   it('debería fallar el inicio de sesión con contraseña incorrecta', async () => {
-    // Setup mock user
+    // Configuramos mock user
     const realHash = await bcrypt.hash('password123', 10);
     const existingUser = {
       id: 1,
@@ -117,7 +116,7 @@ describe('Pruebas de Integración de Autenticación', () => {
   });
 
   it('debería permitir el acceso a la ruta protegida de Mesa con un token válido', async () => {
-    // Mock Mesa.findAll for the controller to return success
+    // Mock Mesa.findAll para que el controlador retorne exitosamente
     vi.mocked(Mesa.findAll).mockResolvedValue([] as MesaInstance[]);
 
     const response = await request(app)
