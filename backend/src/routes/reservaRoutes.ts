@@ -5,8 +5,8 @@ import { authenticate } from '../middleware/authMiddleware';
 
 const reservaRoutes = Router();
 
-reservaRoutes.get('/reservas', authenticate, ReservaController.getAllReservas);
-reservaRoutes.get('/reservas/:id', authenticate, ReservaController.getReserva);
+reservaRoutes.get('/reservas', ReservaController.getAllReservas);
+reservaRoutes.get('/reservas/:id', ReservaController.getReserva);
 reservaRoutes.post('/reservas', ReservaController.createReserva);
 reservaRoutes.put('/reservas/:id', ReservaController.updateReserva);
 
