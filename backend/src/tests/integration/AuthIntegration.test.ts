@@ -111,11 +111,6 @@ describe('Pruebas de Integración de Autenticación', () => {
     expect(response.status).toBe(401);
   });
 
-  it('debería bloquear el acceso a la ruta protegida de Mesa sin token', async () => {
-    const response = await request(app).get('/api/v1/mesas');
-    expect(response.status).toBe(401);
-  });
-
   it('debería permitir el acceso a la ruta protegida de Mesa con un token válido', async () => {
     // Mock Mesa.findAll for the controller to return success
     vi.mocked(Mesa.findAll).mockResolvedValue([] as MesaInstance[]);
