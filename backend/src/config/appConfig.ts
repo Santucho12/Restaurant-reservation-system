@@ -54,10 +54,10 @@ export default class Server {
       }),
     );
 
+    this.app.use('/api/v1', clienteRoutes);
     this.app.use('/api/v1', authRoutes);
     this.app.use('/api/v1', reservaRoutes);
     this.app.use('/api/v1', mesaRoutes);
-    this.app.use('/api/v1', clienteRoutes);
     this.app.use(globalErrorHandler);
   }
 
