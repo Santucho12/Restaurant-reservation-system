@@ -10,6 +10,7 @@ import authRoutes from '../routes/authRoutes';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
+import { globalErrorHandler } from '../middleware/errorMiddleware';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ export default class Server {
     this.app.use('/api/v1', reservaRoutes);
     this.app.use('/api/v1', mesaRoutes);
     this.app.use('/api/v1', clienteRoutes);
+    this.app.use(globalErrorHandler);
   }
 
   private swaggerDocs(): void {
