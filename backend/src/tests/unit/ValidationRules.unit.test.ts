@@ -109,28 +109,28 @@ describe('ValidationRules', () => {
   });
 
   describe('TurnoRule', () => {
-    it('debería validar correctamente horario de almuerzo (13:00 UTC)', async () => {
+    it('debería validar correctamente horario de almuerzo (13:00 Local -> 16:00 UTC)', async () => {
       const rule = new TurnoRule();
       const datos = {
-        'fecha/hora': new Date('2023-10-27T13:00:00Z'),
+        'fecha/hora': new Date('2023-10-27T16:00:00Z'), // 16:00 UTC - 3 = 13:00 Local
       } as unknown as ValidationData;
 
       await expect(rule.validar(datos)).resolves.toBeUndefined();
     });
 
-    it('debería validar correctamente horario de cena (21:00 UTC)', async () => {
+    it('debería validar correctamente horario de cena (21:00 Local -> 00:00 UTC)', async () => {
       const rule = new TurnoRule();
       const datos = {
-        'fecha/hora': new Date('2023-10-27T21:00:00Z'),
+        'fecha/hora': new Date('2023-10-28T00:00:00Z'), // 00:00 UTC - 3 = 21:00 Local (prev day)
       } as unknown as ValidationData;
 
       await expect(rule.validar(datos)).resolves.toBeUndefined();
     });
 
-    it('debería lanzar error fuera de horario permitido (17:00 UTC)', async () => {
+    it('debería lanzar error fuera de horario permitido (17:00 Local -> 20:00 UTC)', async () => {
       const rule = new TurnoRule();
       const datos = {
-        'fecha/hora': new Date('2023-10-27T17:00:00Z'),
+        'fecha/hora': new Date('2023-10-27T20:00:00Z'), // 20:00 UTC - 3 = 17:00 Local
       } as unknown as ValidationData;
 
       await expect(rule.validar(datos)).rejects.toThrow(
