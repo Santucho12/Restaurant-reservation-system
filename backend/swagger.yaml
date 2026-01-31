@@ -293,7 +293,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     delete:
-      summary: "🔒 Elimina una reserva por ID (requiere token)"
+      summary: '🔒 Elimina una reserva por ID (requiere token)'
       security:
         - bearerAuth: []
       parameters:
@@ -352,7 +352,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     post:
-      summary: "🔒 Crea una nueva mesa (requiere token)"
+      summary: '🔒 Crea una nueva mesa (requiere token)'
       security:
         - bearerAuth: []
       requestBody:
@@ -382,7 +382,7 @@ paths:
                 $ref: '#/components/schemas/Error500'
   /mesas/{id}:
     get:
-      summary: "🔒 Obtiene una mesa por ID (requiere token)"
+      summary: '🔒 Obtiene una mesa por ID (requiere token)'
       security:
         - bearerAuth: []
       parameters:
@@ -412,7 +412,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     put:
-      summary: "🔒 Actualiza una mesa existente (requiere token)"
+      summary: '🔒 Actualiza una mesa existente (requiere token)'
       security:
         - bearerAuth: []
       parameters:
@@ -452,7 +452,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     delete:
-      summary: "🔒 Elimina una mesa por ID (requiere token)"
+      summary: '🔒 Elimina una mesa por ID (requiere token)'
       security:
         - bearerAuth: []
       parameters:
@@ -636,4 +636,3 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error500'
-
