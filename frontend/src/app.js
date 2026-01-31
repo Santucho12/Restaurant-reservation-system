@@ -6,7 +6,8 @@ let todasLasReservas = [];
 
 const elementos = {
     fecha: document.getElementById('fecha'),
-    turno: document.getElementById('turno'),
+    horaInicio: document.getElementById('hora-inicio'),
+    horaFin: document.getElementById('hora-fin'),
     personas: document.getElementById('personas'),
     nombre: document.getElementById('nombre'),
     email: document.getElementById('email'),
@@ -28,7 +29,8 @@ function init() {
     cargarDatos();
 
     elementos.fecha.addEventListener('change', actualizarMesas);
-    elementos.turno.addEventListener('change', actualizarMesas);
+    elementos.horaInicio.addEventListener('change', validarHorarioYActualizar);
+    elementos.horaFin.addEventListener('change', validarHorarioYActualizar);
     elementos.personas.addEventListener('change', actualizarMesas);
     elementos.nombre.addEventListener('input', validarFormulario);
     elementos.email.addEventListener('input', validarFormulario);
@@ -51,41 +53,88 @@ async function cargarDatos() {
     }
 }
 
+function validarHorarioYActualizar() {
+    const inicio = elementos.horaInicio.value;
+    const fin = elementos.horaFin.value;
+
+    ocultarMensaje();
+
+    if (inicio && fin) {
+        const [hInicio] = inicio.split(':').map(Number);
+
+        // Validar rango permitido (12-15 o 20-23)
+        const esAlmuerzo = hInicio >= 12 && hInicio < 15;
+        const esCena = hInicio >= 20 && hInicio < 23;
+
+        if (!esAlmuerzo && !esCena) {
+            mostrarMensaje('El horario debe ser Almuerzo (12:00 - 15:00) o Cena (20:00 - 23:00)', 'error');
+            elementos.mesasContainer.innerHTML = '';
+            mesaSeleccionada = null;
+            validarFormulario();
+            return;
+        }
+
+        if (inicio >= fin) {
+            mostrarMensaje('La hora de fin debe ser posterior a la de inicio', 'error');
+            elementos.mesasContainer.innerHTML = '';
+            mesaSeleccionada = null;
+            validarFormulario();
+            return;
+        }
+    }
+
+    actualizarMesas();
+}
+
 function actualizarMesas() {
     const fecha = elementos.fecha.value;
-    const turno = elementos.turno.value;
+    const horaInicio = elementos.horaInicio.value;
+    const horaFin = elementos.horaFin.value;
     const personas = parseInt(elementos.personas.value);
 
     mesaSeleccionada = null;
     validarFormulario();
 
-    if (!fecha || !turno || !personas) {
+    if (!fecha || !horaInicio || !horaFin || !personas) {
         elementos.mesasContainer.innerHTML = '';
         elementos.mesasAviso.classList.remove('oculto');
         return;
     }
 
+    if (document.querySelector('.mensaje.error')) return;
+
     elementos.mesasAviso.classList.add('oculto');
 
-    const reservasActivas = todasLasReservas.filter(r => {
-        const fechaReserva = new Date(r['fecha/hora']).toISOString().split('T')[0];
-        return fechaReserva === fecha && 
-               r.turno === turno && 
-               r.estado !== 'cancelada' && 
-               r.estado !== 'finalizada';
+    const fechaInicioSeleccion = new Date(`${fecha}T${horaInicio}`);
+    const fechaFinSeleccion = new Date(`${fecha}T${horaFin}`);
+
+    const reservasConflictivas = todasLasReservas.filter(r => {
+        if (r.estado === 'cancelada' || r.estado === 'finalizada') return false;
+
+        const rInicio = new Date(r['fecha/hora']);
+        const rFin = new Date(r.fechaFin);
+
+        return (rInicio < fechaFinSeleccion && rFin > fechaInicioSeleccion);
     });
 
-    const mesasOcupadas = reservasActivas.map(r => r.mesaId);
+    const mesasOcupadasIds = reservasConflictivas.map(r => r.mesaId);
 
     elementos.mesasContainer.innerHTML = todasLasMesas.map(mesa => {
-        const ocupada = mesasOcupadas.includes(mesa.id);
+        const ocupada = mesasOcupadasIds.includes(mesa.id);
         const sinCapacidad = mesa.capacidad < personas;
-        
+
         let clases = 'mesa-card';
         if (ocupada) clases += ' ocupada';
         if (sinCapacidad) clases += ' sin-capacidad';
 
         const ubicacionTexto = mesa.ubicacion === 'adentro' ? 'Interior' : 'Terraza';
+
+        let estadoHtml = '';
+        if (ocupada) {
+            estadoHtml = '<div class="mesa-estado">Reservada</div>';
+        } else if (sinCapacidad) {
+            estadoHtml = '<div class="mesa-estado">Excede Capacidad</div>';
+        }
 
         return `
             <div class="${clases}" 
@@ -96,18 +145,17 @@ function actualizarMesas() {
                 <div class="mesa-numero">${mesa.numeroMesa}</div>
                 <div class="mesa-capacidad">${mesa.capacidad} personas</div>
                 <div class="mesa-ubicacion">${ubicacionTexto}</div>
-                ${ocupada ? '<div class="mesa-estado">Reservada</div>' : ''}
-                ${sinCapacidad && !ocupada ? '<div class="mesa-estado">Sin capacidad</div>' : ''}
+                ${estadoHtml}
             </div>
         `;
     }).join('');
 
-    const disponibles = todasLasMesas.filter(m => 
-        !mesasOcupadas.includes(m.id) && m.capacidad >= personas
+    const disponibles = todasLasMesas.filter(m =>
+        !mesasOcupadasIds.includes(m.id) && m.capacidad >= personas
     );
 
     if (disponibles.length === 0 && todasLasMesas.length > 0) {
-        elementos.mesasAviso.textContent = 'No hay mesas disponibles para esta selección';
+        elementos.mesasAviso.textContent = 'No hay mesas disponibles para este horario';
         elementos.mesasAviso.classList.remove('oculto');
     }
 }
@@ -129,13 +177,15 @@ function seleccionarMesa(id, deshabilitada) {
 }
 
 function validarFormulario() {
-    const camposLlenos = elementos.fecha.value && 
-                         elementos.turno.value && 
-                         elementos.personas.value && 
-                         mesaSeleccionada && 
-                         elementos.nombre.value.trim() && 
-                         elementos.email.value.trim() &&
-                         elementos.email.value.includes('@');
+    const camposLlenos = elementos.fecha.value &&
+        elementos.horaInicio.value &&
+        elementos.horaFin.value &&
+        elementos.personas.value &&
+        mesaSeleccionada &&
+        elementos.nombre.value.trim() &&
+        elementos.email.value.trim() &&
+        elementos.email.value.includes('@') &&
+        !document.querySelector('.mensaje.error');
 
     elementos.btnReservar.disabled = !camposLlenos;
 }
@@ -151,10 +201,11 @@ async function realizarReserva() {
             elementos.email.value.trim()
         );
 
-        const horaInicio = elementos.turno.value === 'almuerzo' ? '12:00:00' : '20:00:00';
-        const fechaHora = new Date(`${elementos.fecha.value}T${horaInicio}`);
-        const fechaFin = new Date(fechaHora);
-        fechaFin.setHours(fechaFin.getHours() + 2);
+        const fechaHora = new Date(`${elementos.fecha.value}T${elementos.horaInicio.value}`);
+        const fechaFin = new Date(`${elementos.fecha.value}T${elementos.horaFin.value}`);
+
+        const hora = fechaHora.getHours();
+        const turno = (hora >= 12 && hora < 16) ? 'almuerzo' : 'cena';
 
         const reserva = {
             clienteId: clienteId,
@@ -162,7 +213,7 @@ async function realizarReserva() {
             'fecha/hora': fechaHora.toISOString(),
             fechaFin: fechaFin.toISOString(),
             cantidadPersonas: parseInt(elementos.personas.value),
-            turno: elementos.turno.value
+            turno: turno
         };
 
         const response = await fetch(`${API_URL}/reservas`, {
@@ -212,7 +263,14 @@ function mostrarConfirmacion() {
     const mesaCard = document.querySelector(`.mesa-card[data-id="${mesaSeleccionada}"]`);
 
     document.getElementById('conf-fecha').textContent = formatearFecha(elementos.fecha.value);
-    document.getElementById('conf-turno').textContent = elementos.turno.value === 'almuerzo' ? 'Almuerzo' : 'Cena';
+    // document.getElementById('conf-turno').textContent = elementos.turno.value === 'almuerzo' ? 'Almuerzo' : 'Cena';
+    // Reemplazamos Turno por Hora en confirmacion si existe el elemento en HTML (asumimos que sí o no se mostrara)
+    const turnoLabel = document.querySelector('#conf-turno');
+    if (turnoLabel) {
+        turnoLabel.parentElement.querySelector('.detalle-label').textContent = 'Horario';
+        turnoLabel.textContent = `${elementos.horaInicio.value} - ${elementos.horaFin.value}`;
+    }
+
     document.getElementById('conf-mesa').textContent = `Mesa ${mesaCard.dataset.numero} — ${mesaCard.dataset.ubicacion}`;
     document.getElementById('conf-personas').textContent = elementos.personas.value;
     document.getElementById('conf-nombre').textContent = elementos.nombre.value;
@@ -224,7 +282,8 @@ function mostrarConfirmacion() {
 
 function nuevaReserva() {
     mesaSeleccionada = null;
-    elementos.turno.value = '';
+    elementos.horaInicio.value = '';
+    elementos.horaFin.value = '';
     elementos.personas.value = '';
     elementos.nombre.value = '';
     elementos.email.value = '';
@@ -248,7 +307,7 @@ function ocultarMensaje() {
 
 function formatearFecha(fecha) {
     const [year, month, day] = fecha.split('-');
-    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
-                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     return `${parseInt(day)} de ${meses[parseInt(month) - 1]} de ${year}`;
 }
