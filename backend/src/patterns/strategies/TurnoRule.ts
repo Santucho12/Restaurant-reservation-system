@@ -5,9 +5,9 @@ export class TurnoRule implements ValidationRule {
     const { 'fecha/hora': fechaInicio } = datos;
     const fecha = new Date(fechaInicio);
 
-    // Ajustar a zona horaria -3 (Argentina)
-    // getUTCHours() devuelve 0-23. Restamos 3. Si da negativo, sumamos 24.
-    const hora = (fecha.getUTCHours() - 3 + 24) % 24;
+    // Validar directamente la hora recibida (asumimos que fechaInicio viene en formato ISO
+    // representando la hora local deseada en UTC, ej: 2025-12-15T20:00:00Z para reservar a las 20:00)
+    const hora = fecha.getUTCHours();
 
     const esAlmuerzo = hora >= 12 && hora < 15;
     const esCena = hora >= 20 && hora < 23;
