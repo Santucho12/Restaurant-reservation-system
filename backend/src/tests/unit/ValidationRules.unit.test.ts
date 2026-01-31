@@ -26,7 +26,7 @@ vi.mock('sequelize', () => {
       lt: Symbol('lt'),
       gt: Symbol('gt'),
     },
-    Model: class { },
+    Model: class {},
     DataTypes: {},
   };
 });
