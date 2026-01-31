@@ -6,7 +6,174 @@ info:
     Documentación de Endpoints para el sistema de reservas, mesas y clientes.
 servers:
   - url: http://localhost:3000/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Reserva:
+      type: object
+      properties:
+        id:
+          type: integer
+        clienteId:
+          type: integer
+        mesaId:
+          type: integer
+        fecha:
+          type: string
+          format: date
+        hora:
+          type: string
+          example: '20:00'
+        estado:
+          type: string
+    ReservaInput:
+      type: object
+      properties:
+        clienteId:
+          type: integer
+        mesaId:
+          type: integer
+        fecha/hora:
+          type: string
+          format: date-time
+        cantidadPersonas:
+          type: integer
+        fechaFin:
+          type: string
+          format: date-time
+        turno:
+          type: string
+    ReservaUpdate:
+      type: object
+      properties:
+        clienteId:
+          type: integer
+        mesaId:
+          type: integer
+        fecha:
+          type: string
+          format: date
+        hora:
+          type: string
+    Mesa:
+      type: object
+      properties:
+        id:
+          type: integer
+        numero:
+          type: integer
+        capacidad:
+          type: integer
+        ubicacion:
+          type: string
+    MesaInput:
+      type: object
+      properties:
+        numeroMesa:
+          type: integer
+        capacidad:
+          type: integer
+        ubicacion:
+          type: string
+    MesaUpdate:
+      type: object
+      properties:
+        numero:
+          type: integer
+        capacidad:
+          type: integer
+        ubicacion:
+          type: string
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+    ClienteInput:
+      type: object
+      properties:
+        nombre:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+    Error400:
+      type: object
+      properties:
+        message:
+          type: string
+    Error404:
+      type: object
+      properties:
+        message:
+          type: string
+    Error500:
+      type: object
+      properties:
+        error:
+          type: string
 paths:
+  /register:
+    post:
+      summary: Registro de usuario administrador
+      description: Permite registrar un nuevo usuario administrador.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                nombre:
+                  type: string
+              required:
+                - email
+                - password
+                - nombre
+      responses:
+        '201':
+          description: Usuario registrado correctamente
+        '400':
+          description: Datos inválidos
+        '500':
+          description: Error interno
+  /login:
+    post:
+      summary: Login de usuario administrador
+      description: Permite iniciar sesión y obtener un token JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login exitoso, retorna token JWT
+        '400':
+          description: Credenciales inválidas
+        '500':
+          description: Error interno
   /reservas:
     get:
       summary: Obtiene la lista de todas las reservas
@@ -126,7 +293,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     delete:
-      summary: Elimina una reserva por ID
+      summary: "🔒 Elimina una reserva por ID (requiere token)"
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -183,7 +352,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     post:
-      summary: Crea una nueva mesa
+      summary: "🔒 Crea una nueva mesa (requiere token)"
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -211,7 +382,9 @@ paths:
                 $ref: '#/components/schemas/Error500'
   /mesas/{id}:
     get:
-      summary: Obtiene una mesa por ID
+      summary: "🔒 Obtiene una mesa por ID (requiere token)"
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -239,7 +412,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     put:
-      summary: Actualiza una mesa existente
+      summary: "🔒 Actualiza una mesa existente (requiere token)"
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -277,7 +452,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
     delete:
-      summary: Elimina una mesa por ID
+      summary: "🔒 Elimina una mesa por ID (requiere token)"
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -460,115 +637,3 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error500'
 
-components:
-  schemas:
-    Reserva:
-      type: object
-      properties:
-        id:
-          type: integer
-        clienteId:
-          type: integer
-        mesaId:
-          type: integer
-        fecha:
-          type: string
-          format: date
-        hora:
-          type: string
-          example: '20:00'
-        estado:
-          type: string
-    ReservaInput:
-      type: object
-      properties:
-        clienteId:
-          type: integer
-        mesaId:
-          type: integer
-        fecha/hora:
-          type: string
-          format: date-time
-        cantidadPersonas:
-          type: integer
-        fechaFin:
-          type: string
-          format: date-time
-        turno:
-          type: string
-    ReservaUpdate:
-      type: object
-      properties:
-        clienteId:
-          type: integer
-        mesaId:
-          type: integer
-        fecha:
-          type: string
-          format: date
-        hora:
-          type: string
-    Mesa:
-      type: object
-      properties:
-        id:
-          type: integer
-        numero:
-          type: integer
-        capacidad:
-          type: integer
-        ubicacion:
-          type: string
-    MesaInput:
-      type: object
-      properties:
-        numeroMesa:
-          type: integer
-        capacidad:
-          type: integer
-        ubicacion:
-          type: string
-    MesaUpdate:
-      type: object
-      properties:
-        numero:
-          type: integer
-        capacidad:
-          type: integer
-        ubicacion:
-          type: string
-    Cliente:
-      type: object
-      properties:
-        id:
-          type: integer
-        nombre:
-          type: string
-        email:
-          type: string
-        telefono:
-          type: string
-    ClienteInput:
-      type: object
-      properties:
-        nombre:
-          type: string
-        email:
-          type: string
-        telefono:
-          type: string
-    Error400:
-      type: object
-      properties:
-        message:
-          type: string
-    Error404:
-      type: object
-      properties:
-        message:
-          type: string
-    Error500:
-      type: object
-      properties:
-        error:
-          type: string
