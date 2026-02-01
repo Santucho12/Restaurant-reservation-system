@@ -8,9 +8,9 @@ Con este sistema, los usuarios pueden:
 
 - Reservar una mesa fácilmente.
 - Consultar disponibilidad según cantidad de personas, fecha y turno (almuerzo o cena).
-- Recibir un email de confirmación y cancelar la reserva si lo desean.
+- Recibir un email de confirmación y cancelar la reserva si lo desean (avisar a administracion para cancelar)
 
-El sistema integra un frontend interactivo, un backend con la lógica de reservas y una base de datos para gestionar la información y evitar conflictos de disponibilidad.
+El sistema integra un frontend interactivo con un formulario de reserva y un panel de administrador para la creacion de mesas y edicion de reservas, un backend con la lógica de reservas y una base de datos para gestionar la información y evitar conflictos de disponibilidad.
 
 ---
 
@@ -47,8 +47,8 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
    ```bash
    Una vez ubicados en la carpeta root del proyecto
 
-   cd frontend/src
-   npx -y serve
+   cd frontend
+   npm run dev
 
    ```
 
@@ -57,13 +57,13 @@ El sistema integra un frontend interactivo, un backend con la lógica de reserva
 
 ## Cómo Funciona
 
-1. El usuario accede a la web y encuentra el botón **“Hacer Reserva”**.
-2. Indica cuántas personas asistirán.
-3. Elige una fecha (mediante calendario o API).
-4. Selecciona almuerzo o cena.
+1. El usuario accede a la web y encuentra el formulario **“Reserva de mesas”**.
+2. Elige una fecha (mediante calendario).
+3. Ingresa hora inicio y hora fin de su reserva
+4. Indica cuántas personas asistirán.
 5. El sistema muestra los turnos disponibles para esa fecha y horario.
-6. Ingresa su email.
-7. Se genera la reserva y el usuario recibe un email de confirmación, con opción de cancelarla.
+6. Ingresa su nombre completo y email.
+7. Se genera la reserva y el usuario recibe un email de confirmación.
 
 La validación se realiza en tiempo real usando la base de datos para evitar reservas duplicadas.
 
@@ -72,13 +72,17 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 ## Patrones de Diseño Utilizados
 
 ### Singleton
-- **Función:** Nos aseguramos que la clase Server este instanciada de manera unica controlada a nivel global. 
-- **Ventaja:** Evitamos que se creen multiples servidores de Express, o al menos que no se intente continuamente, evitando de esta forma conflictos de puertos y un manejo incosistente de las solicitudes
+- **Función:** Nos aseguramos que las clases Server y Database este instanciada de manera unica compartida a nivel global. En el caso de la Database nos permite mantener una sola conexion activa a la base de datos.
+- **Ventaja:** Optimizamos recursos y evitamos conflictos, evitamos que se abran multiples conexiones innecesarias cada vez que una parte del sistema necesita acceder a los datos.
 
 ### Strategy
-- **Función:** Define distintas formas de validar disponibilidad según personas, fecha y turno.
-- **Ventaja:** Permite modificar o agregar reglas de validación sin afectar el código principal.
-
+- **Función:** Definimos una serie de validaciones y los hacemos intercambiables. Cada strategy encapsula una regla de negocio especifica para aceptar o rechazar una reserva
+- **Ventaja:** Nos permite agregar, quitar o modificar reglas de validacion de forma independiente sin tocar el codigo principal del controlador, haciendo el sistema mas flexible y facil de mantener (Open/closed)
+  
+### Factory
+- **Función:** Centraliza la complejida de crear el objeto validador. En nuestro caso el metodo validador createValidator no solo instancia el validador, sino que tambien le inyecta automaticamente todas las reglas (strategies) necesarias antes de devolverlo.
+- **Ventaja:** Desacopla la creación del uso. El controlador de reservas no necesita saber que reglas existen ni como configurarlas, simplemente pide un validador listo para usar, reduciendo la dependencia entre componentes.
+  
 ### Observer
 - **Función:** Permite enviar notificaciones automáticas (ej: emails) al crear o cancelar reservas.
 - **Ventaja:** Facilita la extensión del sistema para nuevas notificaciones sin modificar la lógica principal.
@@ -89,13 +93,12 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 
 ### Frontend
 
-- **Tecnologías:** JS - HTML - CSS
+- **Tecnologías:** React + vite
 - **Extras opcionales:** Calendario
 - **Funcionalidades:**
-    - Formularios paso a paso para reservas
+    - Formulario paso a paso para reservas
     - Mostrar mesas disponibles acorde al pedido
     - Confirmación visual de la reserva
-    - Conexión con el backend
 
 ### Backend
 
@@ -105,7 +108,6 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
     - Gestión de reservas y disponibilidad
     - Validación en tiempo real
     - Envío de emails de confirmación
-- **Patrones usados:** Singleton (iniciaclizacion del servidor), Strategy, Observer
 
 ### Base de Datos
 
@@ -114,16 +116,11 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
     - **Cliente:** id, nombre, email
     - **Mesa:** id, número, capacidad, ubicación
     - **Reserva:** id, cliente, mesa, fecha/hora, cantidad de personas, turno (almuerzo/cena), estado
+    - **Usuario:**: id, nombre, email, password_hash
 - **Funcionalidades:**
-    - Almacenamiento de reservas y clientes
+    - Almacenamiento de reservas, clientes y administradores (Usuario)
     - Verificación de disponibilidad
     - Cancelación de reservas
-
-### Email
-
-- **Funcionalidad:** Envío de confirmaciones y gestión de cancelaciones desde el correo
-
----
 
 ## Estructura del Proyecto
 
@@ -132,43 +129,53 @@ La validación se realiza en tiempo real usando la base de datos para evitar res
 ```text
 .
 ├── backend/
-│   └── src/
-│       ├── config/
-│       │   ├── appConfig.js
-│       │   └── dbConfig.js
-│       ├── routes/
-│       │   ├── clienteRoutes.ts
-│       │   ├── mesaRoutes.ts
-│       │   └── reservaRoutes.ts
-│       ├── controllers/
-│       │   ├── ClienteController.ts
-│       │   ├── MesaController.ts
-│       │   └── ReservaController.ts
-│       ├── services/
-│       │   └── ReservaService.ts
-│       ├── models/
-│       │   ├── Cliente.ts
-│       │   ├── Mesa.ts
-│       │   ├── Reserva.ts
-│       │   └── ModelRelations.ts
-│       ├── factories/
-│       │   └── ReservaFactory.ts
-│       ├── strategies/
-│       │   ├── CapacidadStrategy.ts
-│       │   ├── SuperposicionStrategy.ts
-│       │   ├── TurnoStrategy.ts
-│       │   ├── ValidacionStrategy.ts
-│       │   └── ValidarReserva.ts
-│       └── observers/
-│           ├── EmailNotifier.ts
-│           └── Observers.ts
-├── .env.template
-├── .gitignore
-│
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── appConfig.ts
+│   │   │   ├── authConfig.ts
+│   │   │   └── dbConfig.ts
+│   │   ├── controllers/
+│   │   │   ├── ClienteController.ts
+│   │   │   ├── MesaController.ts
+│   │   │   └── ReservaController.ts
+│   │   ├── models/
+│   │   │   ├── Cliente.ts
+│   │   │   ├── Mesa.ts
+│   │   │   ├── ModelsRelations.ts
+│   │   │   ├── Reserva.ts
+│   │   │   └── Usuario.ts
+│   │   ├── patterns/
+│   │   │   ├── factories/
+│   │   │   │   └── ReservaFactory.ts
+│   │   │   ├── observers/
+│   │   │   │   ├── EmailNotifier.ts
+│   │   │   │   └── Observer.ts
+│   │   │   └── strategies/
+│   │   │       ├── CapacidadRule.ts
+│   │   │       ├── ReservationValidator.ts
+│   │   │       ├── SuperposicionRule.ts
+│   │   │       ├── TurnoRule.ts
+│   │   │       └── ValidacionRule.ts
+│   │   ├── routes/
+│   │   │   ├── authRoutes.ts
+│   │   │   ├── clienteRoutes.ts
+│   │   │   ├── mesaRoutes.ts
+│   │   │   └── reservaRoutes.ts
+│   │   └── services/
+│   │       ├── AuthService.ts
+│   │       └── ReservaService.ts
+│   ├── .env
+│   └── app.ts
 └── frontend/
-    └── src/
-        ├── styles/
-        │   └── style.css
-        ├── app.js
-        └── index.html
-```
+    ├── src/
+    │   ├── components/
+    │   ├── context/
+    │   ├── hooks/
+    │   ├── pages/
+    │   ├── styles/
+    │   ├── types/
+    │   ├── App.tsx
+    │   ├── config.ts
+    │   ├── main.tsx
+    │   └── index.css
+    └── index.html
