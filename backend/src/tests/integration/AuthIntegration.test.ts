@@ -113,7 +113,9 @@ describe('Pruebas de Integración de Autenticación', () => {
 
   it('debería permitir el acceso a la ruta protegida de Mesa con un token válido', async () => {
     // Mock Mesa.findAll for the controller to return success
-    vi.mocked(Mesa.findAll).mockResolvedValue([{ id: 1, numeroMesa: 1 }] as unknown as MesaInstance[]);
+    vi.mocked(Mesa.findAll).mockResolvedValue([
+      { id: 1, numeroMesa: 1 },
+    ] as unknown as MesaInstance[]);
 
     const response = await request(app)
       .get('/api/v1/mesas')
