@@ -24,12 +24,18 @@ El sistema integra un frontend interactivo con un formulario de reserva y un pan
 
 ## Correr el proyecto
 
-1. Clonar el repositorio e instalar dependencias en el backend:  
+1. Clonar el repositorio e instalar dependencias en el backend y en el frontend:  
    ```bash
    git clone https://github.com/Santucho12/Restaurant-reservation-system.git
    Una vez ubicados en la carpeta root del proyecto
 
    cd backend
+   npm install
+
+   luego:
+
+   cd ..
+   cd frontend
    npm install
    ```
 2. Renombrar .env.template:  
