@@ -19,8 +19,8 @@ const TableGrid: React.FC<TableGridProps> = ({
     const tableStates = useMemo(() => {
         if (!date || !startTime || !endTime || !people) return [];
 
-        const start = new Date(`${date}T${startTime}`);
-        const end = new Date(`${date}T${endTime}`);
+        const start = new Date(`${date}T${startTime}Z`);
+        const end = new Date(`${date}T${endTime}Z`);
 
         const conflictReservations = reservations.filter(r => {
             if (r.estado === 'cancelada' || r.estado === 'finalizada') return false;

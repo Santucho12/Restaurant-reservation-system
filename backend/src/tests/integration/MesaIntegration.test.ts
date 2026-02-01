@@ -145,9 +145,6 @@ describe('Api de Mesas', () => {
     it('deberia retornar un error con un status code de 404 si la actualizacion falla (mocking falsy return)', async () => {
       vi.mocked(Mesa.update).mockReturnValue(
         Promise.resolve([0] as unknown as [number]),
-      ); // or null
-      vi.mocked(Mesa.update).mockReturnValue(
-        null as unknown as Promise<[number]>,
       );
 
       const response = await request(app)

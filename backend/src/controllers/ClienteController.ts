@@ -7,7 +7,7 @@ export default new (class ClienteController {
   async getAllClientes(req: Request, res: Response) {
     try {
       const cliente = await Cliente.findAll();
-      if (!cliente) {
+      if (!cliente || cliente.length === 0) {
         return ErrorHandler.notFoundErrorCliente(res);
       }
       res.status(200).json(cliente);
@@ -37,6 +37,9 @@ export default new (class ClienteController {
       const newCliente = await Cliente.create(req.body);
       res.status(201).json(newCliente);
     } catch (error) {
+      if ((error as Error).name === 'SequelizeUniqueConstraintError') {
+        return ErrorHandler.badRequestErrorCliente(res, 'cliente ya existente');
+      }
       ErrorHandler.serverInternalError(res, error as Error);
     }
   }
@@ -45,7 +48,7 @@ export default new (class ClienteController {
     try {
       const id = req.params.id;
       const updateCliente = await Cliente.update(req.body, { where: { id } });
-      if (!updateCliente) {
+      if (updateCliente[0] === 0) {
         return ErrorHandler.notFoundErrorCliente(res);
       }
 
