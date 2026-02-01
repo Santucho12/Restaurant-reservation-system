@@ -7,7 +7,7 @@ export default new (class MesaController {
   async getAllMesas(req: Request, res: Response) {
     try {
       const mesa = await Mesa.findAll();
-      if (!mesa) {
+      if (!mesa || mesa.length === 0) {
         return ErrorHandler.notFoundErrorMesa(
           res,
           ErrorHandler.getMessage('noMesas'),
@@ -48,7 +48,7 @@ export default new (class MesaController {
     try {
       const id = req.params.id;
       const updateMesa = await Mesa.update(req.body, { where: { id } });
-      if (!updateMesa) {
+      if (updateMesa[0] === 0) {
         return ErrorHandler.notFoundErrorMesa(res);
       }
 

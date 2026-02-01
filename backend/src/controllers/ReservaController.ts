@@ -9,7 +9,7 @@ export default new (class ReservaController {
   async getAllReservas(req: Request, res: Response) {
     try {
       const reserva = await Reserva.findAll();
-      if (!reserva) {
+      if (!reserva || reserva.length === 0) {
         return ErrorHandler.notFoundErrorReserva(res);
       }
       res.status(200).json(reserva);
@@ -43,16 +43,22 @@ export default new (class ReservaController {
       const newReserva = await ReservaFactory.createReserva(req.body);
       res.status(201).json(newReserva);
     } catch (error) {
+      const message = (error as Error).message;
+
+      if (message === 'Mesa no encontrada') {
+        return ErrorHandler.notFoundErrorMesa(res);
+      }
+
+      if (message === 'Cliente no encontrado') {
+        return ErrorHandler.notFoundErrorCliente(res);
+      }
+
       if (
-        (error as Error).message ===
-          'La mesa ya esta reservada en ese horario' ||
-        (error as Error).message.includes('capacidad') ||
-        (error as Error).message.includes('horario')
+        message === 'La mesa ya esta reservada en ese horario' ||
+        message.includes('capacidad') ||
+        message.includes('horario')
       ) {
-        return ErrorHandler.badRequestErrorReserva(
-          res,
-          (error as Error).message,
-        );
+        return ErrorHandler.badRequestErrorReserva(res, message);
       }
       ErrorHandler.serverInternalError(res, error as Error);
     }
@@ -62,7 +68,7 @@ export default new (class ReservaController {
     try {
       const id = Number(req.params.id);
       const updateReserva = await Reserva.update(req.body, { where: { id } });
-      if (!updateReserva) {
+      if (updateReserva[0] === 0) {
         return ErrorHandler.notFoundErrorReserva(res);
       }
 

@@ -7,7 +7,7 @@ export default new (class ClienteController {
   async getAllClientes(req: Request, res: Response) {
     try {
       const cliente = await Cliente.findAll();
-      if (!cliente) {
+      if (!cliente || cliente.length === 0) {
         return ErrorHandler.notFoundErrorCliente(res);
       }
       res.status(200).json(cliente);
@@ -45,7 +45,7 @@ export default new (class ClienteController {
     try {
       const id = req.params.id;
       const updateCliente = await Cliente.update(req.body, { where: { id } });
-      if (!updateCliente) {
+      if (updateCliente[0] === 0) {
         return ErrorHandler.notFoundErrorCliente(res);
       }
 
