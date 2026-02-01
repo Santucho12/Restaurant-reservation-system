@@ -20,6 +20,60 @@ http://localhost:3000/api-docs
 
 ---
 
+# Documentación de Endpoints - Autenticación
+
+---
+
+### POST /register
+**Descripción:** Registra un nuevo usuario en el sistema.
+
+**Body (JSON):**
+```json
+{
+  "nombre": "admin",
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+```
+**Respuesta exitosa (201):**
+```json
+{
+    "id": 1,
+    "nombre": "admin",
+    "email": "admin@admin.com",
+    "password_hash": "$2b$10$dX1u1U0bIm8CQCLRej9bLeUKFHjq15OOY1ssHUQ6jmGY3nQL4Wq2.",
+    "updatedAt": "2026-02-01T01:18:29.628Z",
+    "createdAt": "2026-02-01T01:18:29.628Z"
+}
+```
+**Errores comunes:**
+- 400: { "message": "El usuario ya existe" }
+- 500: { "error": "Detalles del error" }
+
+---
+
+### POST /login
+**Descripción:** Inicia sesión con un usuario existente y devuelve un token.
+
+**Body (JSON):**
+```json
+{
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+```
+**Respuesta exitosa (200):**
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Njk5MDg3NzAsImV4cCI6MTc2OTkxNTk3MH0.0qcqtBgWZKEI76ab_astRwpqXSBX2p_Ow7bhZWlnrCk"
+}
+```
+**Errores comunes:**
+- 401: { "message": "Credenciales inválidas" }
+- 500: { "error": "Detalles del error" }
+
+---
+
 ### GET /reservas
 **Descripción:** Obtiene la lista de todas las reservas registradas en el sistema.
 
@@ -380,3 +434,4 @@ http://localhost:3000/api-docs
 - 500: { "error": "Detalles del error" }
 
 ---
+
