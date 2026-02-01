@@ -37,6 +37,9 @@ export default new (class ClienteController {
       const newCliente = await Cliente.create(req.body);
       res.status(201).json(newCliente);
     } catch (error) {
+      if ((error as Error).name === 'SequelizeUniqueConstraintError') {
+        return ErrorHandler.badRequestErrorCliente(res, 'cliente ya existente');
+      }
       ErrorHandler.serverInternalError(res, error as Error);
     }
   }
