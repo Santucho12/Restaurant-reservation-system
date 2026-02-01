@@ -91,20 +91,27 @@ const ReservationsTab: React.FC = () => {
                                 <td>
                                     {(() => {
                                         const start = new Date(r['fecha/hora'] || r.fecha);
-                                        return start.toLocaleDateString();
+                                        const day = start.getUTCDate().toString().padStart(2, '0');
+                                        const month = (start.getUTCMonth() + 1).toString().padStart(2, '0');
+                                        const year = start.getUTCFullYear();
+                                        return `${day}/${month}/${year}`;
                                     })()}
                                 </td>
                                 <td>
                                     {(() => {
                                         const start = new Date(r['fecha/hora'] || r.fecha);
-                                        return start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                        const hours = start.getUTCHours().toString().padStart(2, '0');
+                                        const minutes = start.getUTCMinutes().toString().padStart(2, '0');
+                                        return `${hours}:${minutes}`;
                                     })()}
                                 </td>
                                 <td>
                                     {(() => {
                                         const start = new Date(r['fecha/hora'] || r.fecha);
                                         const end = r.fechaFin ? new Date(r.fechaFin) : new Date(start.getTime() + 2 * 60 * 60 * 1000);
-                                        return end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                        const hours = end.getUTCHours().toString().padStart(2, '0');
+                                        const minutes = end.getUTCMinutes().toString().padStart(2, '0');
+                                        return `${hours}:${minutes}`;
                                     })()}
                                 </td>
                                 <td>{getClientName(r.clienteId)}</td>

@@ -109,8 +109,8 @@ const Home: React.FC = () => {
         try {
             const clienteId = await getClient(formData.name, formData.email);
 
-            const start = new Date(`${formData.date}T${formData.startTime}`);
-            const end = new Date(`${formData.date}T${formData.endTime}`);
+            const start = new Date(`${formData.date}T${formData.startTime}Z`);
+            const end = new Date(`${formData.date}T${formData.endTime}Z`);
 
             const h = start.getHours();
             const turno = (h >= 12 && h < 16) ? 'almuerzo' : 'cena';
